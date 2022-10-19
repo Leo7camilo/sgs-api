@@ -1,1 +1,23 @@
+api:
+  version: 1
 
+  
+  
+spring:
+  jpa:    
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    
+  datasource:
+    url: jdbc:mysql://localhost/sgsapi?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    username: root
+    password: 1234
+    
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true  
