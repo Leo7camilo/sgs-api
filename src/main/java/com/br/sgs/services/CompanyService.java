@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import com.br.sgs.model.Company;
+import com.br.sgs.models.Company;
 
 public interface CompanyService {
 

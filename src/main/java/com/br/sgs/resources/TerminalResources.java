@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.br.sgs.model.Terminal;
+import com.br.sgs.models.Terminal;
 import com.br.sgs.services.TerminalService;
 
 @RestController

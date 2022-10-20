@@ -3,7 +3,7 @@ package com.br.sgs.services;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.br.sgs.model.Terminal;
+import com.br.sgs.models.Terminal;
 
 public interface TerminalService {
 

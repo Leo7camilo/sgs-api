@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.br.sgs.model.Company;
-import com.br.sgs.model.Terminal;
+import com.br.sgs.models.Company;
+import com.br.sgs.models.Terminal;
 import com.br.sgs.repository.CompanyRepository;
 import com.br.sgs.repository.TerminalRepository;
 import com.br.sgs.services.TerminalService;

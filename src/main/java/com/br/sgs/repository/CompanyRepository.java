@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.br.sgs.model.Company;
+import com.br.sgs.models.Company;
 
 public interface CompanyRepository extends JpaRepository<Company, UUID>{
 

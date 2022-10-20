@@ -9,7 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.br.sgs.model.Company;
+import com.br.sgs.models.Company;
 import com.br.sgs.repository.CompanyRepository;
 import com.br.sgs.services.CompanyService;
 
