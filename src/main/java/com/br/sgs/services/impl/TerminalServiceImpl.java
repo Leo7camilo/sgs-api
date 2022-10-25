@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.br.sgs.models.Company;
 import com.br.sgs.models.Terminal;
@@ -12,6 +13,8 @@ import com.br.sgs.repository.CompanyRepository;
 import com.br.sgs.repository.TerminalRepository;
 import com.br.sgs.services.TerminalService;
 
+
+@Service
 public class TerminalServiceImpl implements TerminalService{
 	
 	@Autowired

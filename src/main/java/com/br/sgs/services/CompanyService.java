@@ -15,4 +15,6 @@ public interface CompanyService {
 
 	Company update(UUID id, @Valid Company company);
 
+	boolean existsById(UUID idCompany);
+
 }

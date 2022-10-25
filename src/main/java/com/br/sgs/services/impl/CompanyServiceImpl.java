@@ -8,11 +8,14 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.br.sgs.models.Company;
 import com.br.sgs.repository.CompanyRepository;
 import com.br.sgs.services.CompanyService;
 
+
+@Service
 public class CompanyServiceImpl implements CompanyService{
 	
 	@Autowired
@@ -39,6 +42,13 @@ public class CompanyServiceImpl implements CompanyService{
 		company.setUuid(id);
 		return companyRepository.save(company);
 	}
+
+	@Override
+	public boolean existsById(UUID idCompany) {
+		return companyRepository.existsById(idCompany);
+	}
+	
+	
 
 	
 	

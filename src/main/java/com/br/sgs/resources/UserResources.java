@@ -27,7 +27,7 @@ public class UserResources {
 	UserService userService;
 	
 	@PostMapping
-	private ResponseEntity<Object> createCompany(@RequestBody @Validated (UserDto.UserView.RegistrationPost.class)
+	private ResponseEntity<Object> createUser(@RequestBody @Validated (UserDto.UserView.RegistrationPost.class)
 														@JsonView(UserDto.UserView.RegistrationPost.class) UserDto userDto){
 		log.debug("POST registerUser userDto received {} ", userDto.toString());
         if(userService.existsByEmail(userDto.getEmail())){
