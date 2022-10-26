@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.sgs.dtos.RoleDto;
-import com.br.sgs.models.Company;
 import com.br.sgs.models.RoleModel;
 import com.br.sgs.services.CompanyService;
 import com.br.sgs.services.RoleService;
@@ -46,6 +45,10 @@ public class RoleResources {
             log.warn("Description {} is Already Taken ", roleDto.getDescription());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Description is Already Taken!");
         }
+        if (companyService.existsById(idCompany)) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found.");
+		}
+        
         RoleModel roleModel = roleService.save(roleDto, idCompany);
         
         log.debug("POST createRole roleId saved {} ", roleModel.getRoleId());

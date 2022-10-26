@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.br.sgs.models.UserModel;
+import com.br.sgs.models.QueueModel;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserModel, UUID>{
+public interface QueueRepository extends JpaRepository<QueueModel, UUID>{
 
-	boolean existsByEmail(String email);
+	boolean existsByDescription(String description);
 
 }

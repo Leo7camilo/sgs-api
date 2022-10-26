@@ -34,6 +34,7 @@ public class CompanyResources {
 	
 	@PostMapping
 	private ResponseEntity<Company> createCompany(@Valid Company company){
+		log.debug("POST createCompany Company received {} ", company.toString());
 		return new ResponseEntity<Company>(companyService.save(company), HttpStatus.CREATED);
 	}
 	
@@ -46,6 +47,7 @@ public class CompanyResources {
 	
 	@PutMapping("/{id}")
 	private ResponseEntity<Company> putCompany(@PathVariable UUID id, @RequestBody @Valid Company company){
+		log.debug("PUT putCompany Company received {} ", company.toString());
 		return new ResponseEntity<Company>(companyService.update(id, company), HttpStatus.OK);
 	}
 
