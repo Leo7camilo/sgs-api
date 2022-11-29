@@ -16,4 +16,6 @@ public interface ClientService {
 
 	ClientModel update(ClientDto clientDto, UUID idCompany, UUID idClient);
 
+	boolean existsById(UUID idClient);
+
 }

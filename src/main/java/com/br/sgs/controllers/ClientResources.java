@@ -1,4 +1,4 @@
-package com.br.sgs.resources;
+package com.br.sgs.controllers;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.br.sgs.dtos.ClientDto;
 import com.br.sgs.models.ClientModel;
-import com.br.sgs.models.Company;
 import com.br.sgs.services.ClientService;
 import com.br.sgs.services.CompanyService;
 import com.fasterxml.jackson.annotation.JsonView;

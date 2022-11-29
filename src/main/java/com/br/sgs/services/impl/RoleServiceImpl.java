@@ -9,15 +9,21 @@ import org.springframework.stereotype.Service;
 
 import com.br.sgs.dtos.RoleDto;
 import com.br.sgs.enums.RoleState;
+import com.br.sgs.models.CompanyModel;
 import com.br.sgs.models.RoleModel;
+import com.br.sgs.repository.CompanyRepository;
 import com.br.sgs.repository.RoleRepository;
 import com.br.sgs.services.RoleService;
+import com.br.sgs.specifications.SpecificationTemplate.CompanySpec;
 
 @Service
 public class RoleServiceImpl implements RoleService {
 
 	@Autowired
 	RoleRepository roleRepository;
+	
+	@Autowired
+	CompanyRepository companyRepository;
 
 	@Override
 	public boolean existsByDescription(String descriptions) {
@@ -26,10 +32,13 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public RoleModel save(RoleDto roleDto, UUID idCompany) {
+		
+		Optional<CompanyModel> companyModel = companyRepository.findById(idCompany);
+		
 		var roleModel = new RoleModel();
 		BeanUtils.copyProperties(roleDto, roleModel);
 		roleModel.setStatus(RoleState.ACTIVE);
-		roleModel.setIdCompany(idCompany);
+		roleModel.setCompany(companyModel.get());
 		return roleRepository.save(roleModel);
 	}
 

@@ -7,12 +7,17 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.br.sgs.models.Company;
+import com.br.sgs.dtos.CompanyDto;
+import com.br.sgs.models.CompanyModel;
 import com.br.sgs.repository.CompanyRepository;
 import com.br.sgs.services.CompanyService;
+import com.br.sgs.specifications.SpecificationTemplate.CompanySpec;
 
 
 @Service
@@ -22,24 +27,28 @@ public class CompanyServiceImpl implements CompanyService{
 	CompanyRepository companyRepository;
 
 	@Override
-	public Company save(Company company) {
-		company.setDtCreated(LocalDateTime.now());
-		return companyRepository.save(company);
+	public CompanyModel save(CompanyDto companyDto) {
+		
+		var companyModel = new CompanyModel();
+		BeanUtils.copyProperties(companyDto, companyModel);
+		
+		companyModel.setDtCreated(LocalDateTime.now());
+		return companyRepository.save(companyModel);
 	}
 
 	@Override
-	public Optional<Company> findById(UUID id) {
+	public Optional<CompanyModel> findById(UUID id) {
 		return companyRepository.findById(id);
 	}
 
 	@Override
-	public Company update(UUID id, @Valid Company company) {
-		Optional<Company> companyFounded = companyRepository.findById(id);
+	public CompanyModel update(UUID id, @Valid CompanyModel company) {
+		Optional<CompanyModel> companyFounded = companyRepository.findById(id);
 		if(!companyFounded.isPresent()) {
 			throw new NoSuchElementException();
 		}
 		
-		company.setUuid(id);
+		company.setCompanyId(id);
 		return companyRepository.save(company);
 	}
 
@@ -48,10 +57,15 @@ public class CompanyServiceImpl implements CompanyService{
 		return companyRepository.existsById(idCompany);
 	}
 	
-	
 
-	
-	
-	
+	@Override
+	public Page<CompanyModel> getAllCompany(CompanySpec spec, Pageable pageable) {
+		return companyRepository.findAll(spec, pageable);
+	}
+
+	@Override
+	public boolean existsByDocument(String document) {
+		return companyRepository.existsByDocument(document);
+	}
 	
 }

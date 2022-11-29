@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.br.CPF;
 
+import com.br.sgs.validation.UsernameConstraint;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -23,8 +24,14 @@ public class UserDto {
 	
     @NotBlank(groups = UserView.RegistrationPost.class)
     @Size(min = 4, max = 50, groups = UserView.RegistrationPost.class)
+    @UsernameConstraint(groups = UserView.RegistrationPost.class)
     @JsonView(UserView.RegistrationPost.class)
-	private String name;
+    private String username;
+     
+    @NotBlank(groups = UserView.RegistrationPost.class)
+    @Size(min = 4, max = 50, groups = UserView.RegistrationPost.class)
+    @JsonView(UserView.RegistrationPost.class)
+	private String fullName;
     
     @NotBlank(groups = UserView.RegistrationPost.class)
     @Email(groups = UserView.RegistrationPost.class)

@@ -3,14 +3,25 @@ package com.br.sgs.services;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.br.sgs.models.Terminal;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.br.sgs.dtos.TerminalDto;
+import com.br.sgs.models.TerminalModel;
+import com.br.sgs.specifications.SpecificationTemplate.TerminalSpec;
 
 public interface TerminalService {
 
-	Terminal save(UUID uuidCompany, Terminal terminal);
+	TerminalModel save(UUID uuidCompany, TerminalDto terminalDto);
 
-	Optional<Terminal> findById(UUID id);
+	Optional<TerminalModel> findById(UUID id);
 
-	Terminal update(UUID id, Terminal terminal);
+	TerminalModel update(UUID id, TerminalDto terminal);
+
+	boolean existsByName(String name);
+
+	TerminalModel updateStatus(TerminalModel terminalModel);
+	
+	Page<TerminalModel> getAllTerminal(TerminalSpec spec, Pageable pageable);
 
 }

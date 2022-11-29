@@ -1,4 +1,4 @@
-package com.br.sgs.resources;
+package com.br.sgs.controllers;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,7 +59,7 @@ public class RoleResources {
 	}
 	
 	
-	@PostMapping("{idCompany}/{idRole}")
+	@PutMapping("{idCompany}/{idRole}")
 	private ResponseEntity<Object> alternateStatus(@RequestBody @Validated (RoleDto.RoleView.RoleStatusPut.class)
 														@JsonView(RoleDto.RoleView.RoleStatusPut.class) RoleDto roleDto,
 														@PathVariable UUID idCompany,
@@ -75,7 +76,7 @@ public class RoleResources {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found.");
 		}
 		
-		if (idCompany != roleModel.get().getIdCompany()) {
+		if (idCompany != roleModel.get().getCompany().getCompanyId()) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("CompanyId is diferent.");
 		}
 		

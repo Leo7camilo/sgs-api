@@ -2,6 +2,7 @@ package com.br.sgs.models;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,12 +14,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.persistence.JoinColumn;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.br.CPF;
 
 import com.br.sgs.enums.UserStatus;
@@ -40,11 +42,15 @@ public class UserModel implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Type(type="uuid-char")
 	private UUID userId;
 	
 	@NotNull
 	@Column(nullable = false, length = 150)
-	private String name;
+	private String username;
+	
+	@Column(nullable = false, length = 150)
+	private String fullName;
 	
 	@NotNull
 	@CPF
@@ -63,7 +69,6 @@ public class UserModel implements Serializable {
     @JsonIgnore
 	private String password;
 	
-	
 	@Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
 	private LocalDateTime dtCreated;
@@ -76,12 +81,18 @@ public class UserModel implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private UserStatus userStatus;
 	
-	
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	//@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(    name = "TB_USERS_ROLES",
+    @JoinTable(    name = "TB_USER_ROLES",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Company> companys;
+    private Set<RoleModel> roles = new HashSet<>();
+	
+	//@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(    name = "TB_USERS_COMPANY",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "company_id"))
+	private Set<CompanyModel> companys = new HashSet<>();
 	
 }

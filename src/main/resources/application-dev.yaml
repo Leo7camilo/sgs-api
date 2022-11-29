@@ -1,8 +1,7 @@
-api:
-  version: 1
-
-  
-  
+sgs:
+  auth:
+    jwtSecret: t7w!z%C*F-JaNdRgUkXp2s5v8x/A?D(G+KbPeShVmYq3t6w9z$B&E)H@McQfTjWn
+    jwtExpirationMs: 14400000
 spring:
   jpa:    
     hibernate:
@@ -12,7 +11,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
-    
   datasource:
     url: jdbc:mysql://localhost/sgsapi?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: root
@@ -21,3 +19,8 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true  
+
+
+#server:
+#  servlet:
+#    context-path: /sgs-api

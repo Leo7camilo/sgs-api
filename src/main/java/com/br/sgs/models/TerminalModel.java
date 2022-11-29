@@ -1,18 +1,23 @@
 package com.br.sgs.models;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import com.br.sgs.enums.TerminalState;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -20,33 +25,32 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Entity
-@Table(name = "QUEUE_HIST")
+@Table(name = "TERMINAL")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class QueueHistModel implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+public class TerminalModel {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Type(type="uuid-char")
-	private UUID idQueueHist;
+	private UUID terminalId;
 	
 	@NotNull
-	private UUID idQueue;
+	private String name;
 	
-	@NotNull
-	@Column(nullable = false, length = 150)
-	private String description;
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+    private TerminalState status;
 	
-	@NotNull
-	private UserModel idUser;
+	@Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+	private LocalDateTime dtChange;
 	
-	@NotNull
-	private LocalDateTime tsChange;
-
+	@ManyToOne
+	@JoinColumn(name = "companyId")
+	private CompanyModel company;
+	
 }

@@ -1,6 +1,8 @@
 package com.br.sgs.models;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -12,14 +14,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.br.sgs.enums.QueueState;
 import com.sun.istack.NotNull;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "QUEUE")
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class QueueModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -27,6 +37,7 @@ public class QueueModel implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Type(type="uuid-char")
 	private UUID queueId;
 	
 	@NotNull

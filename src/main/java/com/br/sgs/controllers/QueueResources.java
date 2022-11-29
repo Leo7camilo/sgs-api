@@ -1,4 +1,4 @@
-package com.br.sgs.resources;
+package com.br.sgs.controllers;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ public class QueueResources {
 	@Autowired
 	CompanyService companyService;
 	
+	@PreAuthorize("hasAnyRole('EMPLOYEE')")
 	@PostMapping("{idCompany}")
 	private ResponseEntity<Object> createQueue(@RequestBody @Validated (QueueDto.QueueView.RegistrationPost.class)
 														@JsonView(QueueDto.QueueView.RegistrationPost.class) QueueDto queueDto,
@@ -58,6 +60,7 @@ public class QueueResources {
 		return ResponseEntity.status(HttpStatus.CREATED).body(queueModel);
 	}
 	
+	@PreAuthorize("hasAnyRole('EMPLOYEE')")
 	@PutMapping("{idCompany}/status/{idQueue}")
 	private ResponseEntity<Object> alternateStatus(@RequestBody @Validated (QueueDto.QueueView.QueueStatusPut.class)
 														@JsonView(QueueDto.QueueView.QueueStatusPut.class) QueueDto queueDto,
@@ -87,6 +90,7 @@ public class QueueResources {
 		return ResponseEntity.status(HttpStatus.CREATED).body(roleModelUpdated);
 	}
 	
+	@PreAuthorize("hasAnyRole('EMPLOYEE')")
 	@PutMapping("{idCompany}/{idQueue}")
 	private ResponseEntity<Object> alterate(@RequestBody @Validated (QueueDto.QueueView.QueuePut.class)
 														@JsonView(QueueDto.QueueView.QueuePut.class) QueueDto queueDto,

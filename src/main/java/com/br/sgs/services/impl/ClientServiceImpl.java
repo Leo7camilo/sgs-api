@@ -49,6 +49,11 @@ public class ClientServiceImpl implements ClientService{
 		clientModel.setIdClient(idClient);
 		return clientRepository.save(clientModel);
 	}
+
+	@Override
+	public boolean existsById(UUID idClient) {
+		return clientRepository.existsById(idClient);
+	}
 	
 	
 

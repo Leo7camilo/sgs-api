@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.br.CPF;
 
+import com.br.sgs.enums.AttendenceState;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 
@@ -21,40 +22,37 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "CLIENT")
-public class ClientModel implements Serializable {
+@Table(name = "ATTENDENCE")
+public class AttendenceModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Type(type="uuid-char")
+	private UUID idAttendence;
+	
+	@NotNull
+	@Type(type="uuid-char")
+	private UUID idQueue;
+	
+	@NotNull
+	@Type(type="uuid-char")
 	private UUID idClient;
-	
-	@NotNull
-	@Column(nullable = false, length = 150)
-	private String name;
-	
-	@CPF
-	@Column(nullable = false, unique = true, length = 9)
-	private String document;
-	
-	@NotNull
-	@Column(nullable = false, length = 50)
-	private String tel;
-	
 	
 	@Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
 	private LocalDateTime dtCreated;
 	
+	@Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+	private LocalDateTime dtUpdated;
+	
 	@NotNull
 	@Column(nullable = false, length = 150)
-	private String organization;
+	private AttendenceState status;
 	
 	@NotNull
 	private UUID idCompany;
-	
 	
 }
