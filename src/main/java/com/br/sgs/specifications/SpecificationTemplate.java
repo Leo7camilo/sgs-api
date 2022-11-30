@@ -7,6 +7,7 @@ import com.br.sgs.models.CompanyModel;
 import com.br.sgs.models.TerminalModel;
 
 import net.kaczmarzyk.spring.data.jpa.domain.GreaterThanOrEqual;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -26,7 +27,9 @@ public class SpecificationTemplate {
 
     
     @And({
-        @Spec(path = "dtCreated", spec = GreaterThanOrEqual.class)
+        @Spec(path = "dtCreated", spec = GreaterThanOrEqual.class),
+        @Spec(path = "status", spec = Equal.class),
+        @Spec(path = "idQueue", spec = Equal.class)
     })
 	public interface AttendenceSpec extends Specification<AttendenceModel> {}
 

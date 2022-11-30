@@ -2,9 +2,11 @@ package com.br.sgs.services.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.br.sgs.dtos.AttendenceDto;
 import com.br.sgs.enums.AttendenceState;
 import com.br.sgs.models.AttendenceModel;
-import com.br.sgs.models.ClientModel;
+import com.br.sgs.models.QueueModel;
 import com.br.sgs.repository.AttendenceRepository;
 import com.br.sgs.services.AttendenceService;
+import com.br.sgs.services.QueueService;
 import com.br.sgs.specifications.SpecificationTemplate.AttendenceSpec;
 
 
@@ -26,8 +29,11 @@ public class AttendenceServiceImpl implements AttendenceService{
 	@Autowired
 	AttendenceRepository attendenceRepository;
 	
+	@Autowired
+	QueueService queueService;
+	
 	@Override
-	public Page<AttendenceModel> getAllTerminal(AttendenceSpec spec, Pageable pageable) {
+	public Page<AttendenceModel> getAllAttendence(AttendenceSpec spec, Pageable pageable) {
 		return attendenceRepository.findAll(spec, pageable);
 	}
 
@@ -40,14 +46,57 @@ public class AttendenceServiceImpl implements AttendenceService{
 		attendenceModel.setDtUpdated(LocalDateTime.now(ZoneId.of("UTC")));
 		attendenceModel.setIdClient(idClient);
 		attendenceModel.setIdCompany(idCompany);
-		attendenceModel.setStatus(AttendenceState.WAITING);
+		attendenceModel.setStatus(AttendenceState.NOT_FIT);
 		
-		for(UUID idQueue: attendenceDto.getIdQueueList()) {
-			attendenceModel.setIdQueue(idQueue);
+		List<QueueModel> listOrdened = queueService.orderListQueueByPriority(attendenceDto.getIdQueueList());
+		for(int i = 0; i<listOrdened.size(); i++) {
+			if(i == 0)
+				attendenceModel.setStatus(AttendenceState.WAITING);
+			attendenceModel.setIdQueue(listOrdened.get(i).getQueueId());
 			attendenceRepository.save(attendenceModel);
 		}
 	}
 	
+	@Override
+	public Optional<AttendenceModel> findByIdQueue(UUID idQueue) {
+		return attendenceRepository.findByIdQueue(idQueue);
+	}
 
-	
+	@Override
+	public void updateStatus(AttendenceDto attendenceDto, UUID idCompany, UUID idQueue) {
+		Optional<AttendenceModel> attendenceModel = findByIdQueue(idQueue);
+		if(!attendenceModel.isPresent()) {
+			throw new NoSuchElementException();
+		}
+		
+		if(!attendenceModel.get().getStatus().equals(AttendenceState.WAITING)) {
+			//tentativa de chamar usuário antes da ordem, ou em atendimento ou já atendido
+			throw new NoSuchElementException();
+		}
+		
+		if(attendenceModel.get().getIdCompany() != idCompany) {
+			//tentativa de alterar fila de outra companhia
+			throw new NoSuchElementException();
+		}
+		
+		attendenceModel.get().setDtUpdated(LocalDateTime.now(ZoneId.of("UTC")));
+		attendenceModel.get().setStatus(AttendenceState.IN_ATTENDENCE);
+		attendenceRepository.save(attendenceModel.get());
+	}
+
+	@Override
+	public void updateStatus(UUID idCompany, UUID idQueue, UUID idUser) {
+		Optional<AttendenceModel> attendenceModel = findByIdQueue(idQueue);
+		if(!attendenceModel.isPresent()) {
+			throw new NoSuchElementException();
+		}
+		
+		
+		attendenceModel.get().setDtUpdated(LocalDateTime.now(ZoneId.of("UTC")));
+		attendenceModel.get().setStatus(AttendenceState.ATTENDED);
+		attendenceRepository.save(attendenceModel.get());
+		
+	}
+
+
 }

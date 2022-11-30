@@ -1,5 +1,6 @@
 package com.br.sgs.services;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -11,8 +12,13 @@ import com.br.sgs.specifications.SpecificationTemplate.AttendenceSpec;
 
 public interface AttendenceService {
 
-	Page<AttendenceModel> getAllTerminal(AttendenceSpec spec, Pageable pageable);
+	Page<AttendenceModel> getAllAttendence(AttendenceSpec spec, Pageable pageable);
 
 	void save(AttendenceDto attendenceDto, UUID idCompany, UUID idClient);
 
+	void updateStatus(AttendenceDto attendenceDto, UUID idCompany, UUID idQueue);
+
+	Optional<AttendenceModel> findByIdQueue(UUID idQueue);
+
+	void updateStatus(UUID idCompany, UUID idQueue, UUID idUser);
 }

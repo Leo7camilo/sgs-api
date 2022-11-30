@@ -15,12 +15,16 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AttendenceDto {
 	
-	public interface TerminalView {
+	public interface AttendenceView {
 	    public static interface RegistrationPost {}
+	    public static interface CallsPost {}
 	}
 	
-	@NotBlank(groups = TerminalView.RegistrationPost.class)
-	@JsonView(TerminalView.RegistrationPost.class)
+	@NotBlank(groups = AttendenceView.RegistrationPost.class)
+	@JsonView(AttendenceView.RegistrationPost.class)
 	private List<UUID> idQueueList = new ArrayList<>();
- 
+	
+	@NotBlank(groups = AttendenceView.CallsPost.class)
+	@JsonView(AttendenceView.CallsPost.class)
+	private UUID idUser;
 }

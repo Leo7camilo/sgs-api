@@ -1,5 +1,6 @@
 package com.br.sgs.services;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,4 +20,6 @@ public interface QueueService {
 	boolean existsById(UUID id);
 
 	QueueModel update(QueueDto queueDto, UUID idCompany, UUID idQueue);
+
+	List<QueueModel> orderListQueueByPriority(List<UUID> idQueueList);
 }

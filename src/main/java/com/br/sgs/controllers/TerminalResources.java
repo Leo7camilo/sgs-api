@@ -88,7 +88,7 @@ public class TerminalResources {
 	
 	@GetMapping
     public ResponseEntity<Page<TerminalModel>> getAllCompany(SpecificationTemplate.TerminalSpec spec,
-    								@PageableDefault(page = 0, size = 10, sort = "comapanyId", direction = Sort.Direction.ASC) Pageable pageable){
+    								@PageableDefault(page = 0, size = 10, sort = "terminalId", direction = Sort.Direction.ASC) Pageable pageable){
 		    
         return ResponseEntity.status(HttpStatus.OK).body(terminalService.getAllTerminal(spec, pageable));  
     }

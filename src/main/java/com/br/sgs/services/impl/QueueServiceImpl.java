@@ -2,6 +2,7 @@ package com.br.sgs.services.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -103,6 +104,11 @@ public class QueueServiceImpl implements QueueService {
 		queueModel.setIdCompany(idCompany);
 		queueModel.setQueueId(idQueue);
 		return queueRepository.save(queueModel);
+	}
+
+	@Override
+	public List<QueueModel> orderListQueueByPriority(List<UUID> idQueueList) {
+		return queueRepository.findAllByIdOrderById(idQueueList);
 	}
 
 }

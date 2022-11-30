@@ -1,5 +1,6 @@
 package com.br.sgs.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,7 @@ import com.br.sgs.models.AttendenceModel;
 public interface AttendenceRepository
 		extends JpaRepository<AttendenceModel, UUID>, JpaSpecificationExecutor<AttendenceModel> {
 	boolean existsByName(String name);
+
+	Optional<AttendenceModel> findByIdQueue(UUID idQueue);
 
 }
