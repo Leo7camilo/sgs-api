@@ -22,4 +22,5 @@ public interface QueueService {
 	QueueModel update(QueueDto queueDto, UUID idCompany, UUID idQueue);
 
 	List<QueueModel> orderListQueueByPriority(List<UUID> idQueueList);
+
 }

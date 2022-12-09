@@ -13,5 +13,5 @@ import com.br.sgs.models.TerminalModel;
 public interface TerminalRepository extends JpaRepository<TerminalModel, UUID>, JpaSpecificationExecutor<TerminalModel> {
 	boolean existsByName(String name);
 	
-	Optional<TerminalModel> findByNameAndCompanyId(String name, UUID companyId);
+	Optional<TerminalModel> findByNameAndCompanyCompanyId(String name, UUID companyId);
 }

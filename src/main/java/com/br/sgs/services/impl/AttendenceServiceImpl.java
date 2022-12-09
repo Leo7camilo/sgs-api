@@ -47,6 +47,7 @@ public class AttendenceServiceImpl implements AttendenceService{
 		attendenceModel.setIdClient(idClient);
 		attendenceModel.setIdCompany(idCompany);
 		attendenceModel.setStatus(AttendenceState.NOT_FIT);
+		attendenceModel.setPassword(attendenceDto.getPassaword());
 		
 		List<QueueModel> listOrdened = queueService.orderListQueueByPriority(attendenceDto.getIdQueueList());
 		for(int i = 0; i<listOrdened.size(); i++) {
@@ -85,16 +86,21 @@ public class AttendenceServiceImpl implements AttendenceService{
 	}
 
 	@Override
-	public void updateStatus(UUID idCompany, UUID idQueue, UUID idUser) {
+	@Transactional
+	public void updateStatus(UUID idCompany, UUID idQueue, UUID idClient) {
 		Optional<AttendenceModel> attendenceModel = findByIdQueue(idQueue);
 		if(!attendenceModel.isPresent()) {
 			throw new NoSuchElementException();
 		}
-		
-		
 		attendenceModel.get().setDtUpdated(LocalDateTime.now(ZoneId.of("UTC")));
 		attendenceModel.get().setStatus(AttendenceState.ATTENDED);
 		attendenceRepository.save(attendenceModel.get());
+		
+		List<AttendenceModel> attendenceModelList = attendenceRepository.findByIdClientOrderByIdAttendence(idClient);
+		if(attendenceModelList != null && attendenceModelList.size() > 0) {
+			attendenceModelList.get(0).setStatus(AttendenceState.WAITING);
+			attendenceRepository.save(attendenceModelList.get(0));
+		}
 		
 	}
 

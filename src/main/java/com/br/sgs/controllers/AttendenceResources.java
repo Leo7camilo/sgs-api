@@ -3,8 +3,6 @@ package com.br.sgs.controllers;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.sgs.dtos.AttendenceDto;
-import com.br.sgs.dtos.UserDto;
 import com.br.sgs.models.AttendenceModel;
 import com.br.sgs.services.AttendenceService;
 import com.br.sgs.services.ClientService;
@@ -111,10 +108,10 @@ public class AttendenceResources {
 		return new ResponseEntity<Object>(HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/{idCompany}/calls/{idQueue}/{idUser}")
-	private ResponseEntity<Object> deleteClient(@PathVariable UUID idCompany, @PathVariable UUID idQueue, @PathVariable UUID idUser) {
+	@DeleteMapping("/{idCompany}/calls/{idQueue}/{idClient}")
+	private ResponseEntity<Object> deleteClient(@PathVariable UUID idCompany, @PathVariable UUID idQueue, @PathVariable UUID idClient) {
 
-		log.info("DELETE deleteClient received {} | {} | {}", idCompany, idQueue, idUser);
+		log.info("DELETE deleteClient received {} | {} | {}", idCompany, idQueue, idClient);
 
 		if (queueService.existsById(idQueue)) {
 			log.info("Queue {} Not Found ", idQueue);
@@ -126,7 +123,7 @@ public class AttendenceResources {
 			throw new NoSuchElementException();
 		}
 
-		attendenceService.updateStatus(idCompany, idQueue, idUser);
+		attendenceService.updateStatus(idCompany, idQueue, idClient);
 
 		return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 	}

@@ -13,6 +13,6 @@ public interface QueueRepository extends JpaRepository<QueueModel, UUID>{
 
 	boolean existsByDescription(String description);
 
-	List<QueueModel> findAllByIdOrderById(List<UUID> idQueueList);
+	List<QueueModel> findAllByQueueIdInOrderByQueueId(List<UUID> idQueueList);
 
 }

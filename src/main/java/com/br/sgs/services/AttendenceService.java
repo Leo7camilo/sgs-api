@@ -20,5 +20,5 @@ public interface AttendenceService {
 
 	Optional<AttendenceModel> findByIdQueue(UUID idQueue);
 
-	void updateStatus(UUID idCompany, UUID idQueue, UUID idUser);
+	void updateStatus(UUID idCompany, UUID idQueue, UUID idClient);
 }

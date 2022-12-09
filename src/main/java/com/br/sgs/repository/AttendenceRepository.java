@@ -1,5 +1,6 @@
 package com.br.sgs.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,8 +13,9 @@ import com.br.sgs.models.AttendenceModel;
 @Repository
 public interface AttendenceRepository
 		extends JpaRepository<AttendenceModel, UUID>, JpaSpecificationExecutor<AttendenceModel> {
-	boolean existsByName(String name);
-
+	
 	Optional<AttendenceModel> findByIdQueue(UUID idQueue);
+
+	List<AttendenceModel> findByIdClientOrderByIdAttendence(UUID idClient);
 
 }

@@ -56,7 +56,7 @@ public class TerminalServiceImpl implements TerminalService{
 	@Override
 	public TerminalModel update(UUID companyId, TerminalDto terminalDto) {
 		
-		Optional<TerminalModel> terminal = terminalRepository.findByNameAndCompanyId(terminalDto.getName(), companyId);
+		Optional<TerminalModel> terminal = terminalRepository.findByNameAndCompanyCompanyId(terminalDto.getName(), companyId);
 		if(!terminal.isPresent()) {
 			throw new NoSuchElementException();
 		}

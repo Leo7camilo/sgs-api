@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.br.CPF;
 
 import com.br.sgs.enums.AttendenceState;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -31,6 +30,8 @@ public class AttendenceModel implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Type(type="uuid-char")
 	private UUID idAttendence;
+	
+	private Long password;
 	
 	@NotNull
 	@Type(type="uuid-char")
@@ -53,6 +54,8 @@ public class AttendenceModel implements Serializable {
 	private AttendenceState status;
 	
 	@NotNull
+	@Type(type="uuid-char")
 	private UUID idCompany;
+	
 	
 }

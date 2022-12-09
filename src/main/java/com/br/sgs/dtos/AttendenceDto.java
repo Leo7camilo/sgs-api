@@ -24,6 +24,10 @@ public class AttendenceDto {
 	@JsonView(AttendenceView.RegistrationPost.class)
 	private List<UUID> idQueueList = new ArrayList<>();
 	
+	@NotBlank(groups = AttendenceView.RegistrationPost.class)
+	@JsonView(AttendenceView.RegistrationPost.class)
+	private Long passaword;
+	
 	@NotBlank(groups = AttendenceView.CallsPost.class)
 	@JsonView(AttendenceView.CallsPost.class)
 	private UUID idUser;
