@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import com.br.sgs.dtos.TerminalDto;
 import com.br.sgs.models.TerminalModel;
@@ -23,5 +24,9 @@ public interface TerminalService {
 	TerminalModel updateStatus(TerminalModel terminalModel);
 	
 	Page<TerminalModel> getAllTerminal(TerminalSpec spec, Pageable pageable);
+
+	Page<TerminalModel> findAllByCompany(Specification<TerminalModel> spec, Pageable pageable);
+
+	Optional<TerminalModel> findByIdAndCompanyId(UUID idTerminal, UUID companyId);
 
 }

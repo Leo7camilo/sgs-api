@@ -1,6 +1,5 @@
 package com.br.sgs.dtos;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -26,18 +25,12 @@ public class ClientDto {
     @Size(min = 4, max = 50, groups = ClientView.RegistrationPost.class)
     @JsonView(ClientView.RegistrationPost.class)
 	private String name;
-    
-    @NotBlank(groups = ClientView.RegistrationPost.class)
-    @Email(groups = ClientView.RegistrationPost.class)
-    @JsonView(ClientView.RegistrationPost.class)
-    private String email;
 	
     @CPF(groups = {ClientView.RegistrationPost.class, ClientView.ClientPut.class})
     @JsonView({ClientView.RegistrationPost.class, ClientView.ClientPut.class})
 	private String document;
     
     @NotBlank(groups = ClientView.RegistrationPost.class)
-    @Email(groups = ClientView.RegistrationPost.class)
     @JsonView(ClientView.RegistrationPost.class)
     private String organization;
     

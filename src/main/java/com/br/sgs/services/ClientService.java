@@ -3,8 +3,12 @@ package com.br.sgs.services;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.br.sgs.dtos.ClientDto;
 import com.br.sgs.models.ClientModel;
+import com.br.sgs.specifications.SpecificationTemplate.ClientSpec;
 
 public interface ClientService {
 
@@ -17,5 +21,9 @@ public interface ClientService {
 	ClientModel update(ClientDto clientDto, UUID idCompany, UUID idClient);
 
 	boolean existsById(UUID idClient);
+
+	Page<ClientModel> getAllClients(ClientSpec spec, Pageable pageable, UUID idCompany);
+
+	Optional<ClientModel> findByIdAndCompanyId(UUID idClient, UUID idCompany);
 
 }

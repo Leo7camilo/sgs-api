@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -37,13 +39,8 @@ public class ClientModel implements Serializable {
 	private String name;
 	
 	@CPF
-	@Column(nullable = false, unique = true, length = 9)
+	@Column(nullable = false, unique = true, length = 11)
 	private String document;
-	
-	@NotNull
-	@Column(nullable = false, length = 50)
-	private String tel;
-	
 	
 	@Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -52,9 +49,10 @@ public class ClientModel implements Serializable {
 	@NotNull
 	@Column(nullable = false, length = 150)
 	private String organization;
-	
-	@NotNull
-	private UUID idCompany;
+
+	@OneToOne
+	@JoinColumn(name = "companyId")
+	private CompanyModel company;
 	
 	
 }

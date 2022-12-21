@@ -22,6 +22,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.br.sgs.exception.DocumentAlredyInUse;
+import com.br.sgs.exception.NameAlredyInUse;
 
 @ControllerAdvice
 public class ExceptionSgsHandler extends ResponseEntityExceptionHandler{
@@ -47,9 +48,19 @@ public class ExceptionSgsHandler extends ResponseEntityExceptionHandler{
 		return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
 	}
 	
+	@ExceptionHandler({NameAlredyInUse.class})
+	public ResponseEntity<Object> handlerNameAlredyInUse(Exception ex) {
+		String mensagemUsuario = messageSource.getMessage("nome-invalido", null, 
+				LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		
+		return ResponseEntity.badRequest().body(erros);
+	}
+	
 	@ExceptionHandler({DocumentAlredyInUse.class})
 	public ResponseEntity<Object> handlerDocumentAlredyInUse(Exception ex) {
-		String mensagemUsuario = messageSource.getMessage("document.invalido", null, 
+		String mensagemUsuario = messageSource.getMessage("documento-invalido", null, 
 				LocaleContextHolder.getLocale());
 		String mensagemDesenvolvedor = ex.toString();
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));

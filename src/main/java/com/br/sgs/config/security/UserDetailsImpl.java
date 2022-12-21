@@ -30,7 +30,7 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
     private String email;
-    private Set<CompanyModel> companys;
+    //private Set<CompanyModel> companys;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(UserModel userModel) {
@@ -43,7 +43,6 @@ public class UserDetailsImpl implements UserDetails {
                 userModel.getUsername(),
                 userModel.getPassword(),
                 userModel.getEmail(),
-                userModel.getCompanys(),
                 authorities);
     }
 

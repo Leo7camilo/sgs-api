@@ -14,4 +14,6 @@ public interface TerminalRepository extends JpaRepository<TerminalModel, UUID>, 
 	boolean existsByName(String name);
 	
 	Optional<TerminalModel> findByNameAndCompanyCompanyId(String name, UUID companyId);
+
+	Optional<TerminalModel> findByTerminalIdAndCompanyCompanyId(UUID terminal, UUID companyId);
 }

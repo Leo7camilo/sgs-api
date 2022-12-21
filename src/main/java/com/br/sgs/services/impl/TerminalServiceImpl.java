@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.br.sgs.dtos.TerminalDto;
@@ -44,6 +45,7 @@ public class TerminalServiceImpl implements TerminalService{
 		BeanUtils.copyProperties(terminalDto, terminalModel);
 		terminalModel.setCompany(company.get());
 		terminalModel.setDtChange(LocalDateTime.now(ZoneId.of("UTC")));
+		terminalModel.setStatus(TerminalState.ACTIVE);
 		
 		return terminalRepository.save(terminalModel);
 	}
@@ -95,5 +97,18 @@ public class TerminalServiceImpl implements TerminalService{
 	public Page<TerminalModel> getAllTerminal(TerminalSpec spec, Pageable pageable) {
 		return terminalRepository.findAll(spec, pageable);
 	}
+
+	@Override
+	public Page<TerminalModel> findAllByCompany(Specification<TerminalModel> spec, Pageable pageable) {
+		return terminalRepository.findAll(spec, pageable);
+	}
+
+	@Override
+	public Optional<TerminalModel> findByIdAndCompanyId(UUID idTerminal, UUID companyId) {
+		return terminalRepository.findByTerminalIdAndCompanyCompanyId(idTerminal, companyId);
+	}
+
+	
+	
 	
 }

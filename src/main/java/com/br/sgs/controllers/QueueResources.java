@@ -37,12 +37,12 @@ public class QueueResources {
 	CompanyService companyService;
 	
 	@PreAuthorize("hasAnyRole('EMPLOYEE')")
-	@PostMapping("{idCompany}")
+	@PostMapping("/{idCompany}")
 	private ResponseEntity<Object> createQueue(@RequestBody @Validated (QueueDto.QueueView.RegistrationPost.class)
 														@JsonView(QueueDto.QueueView.RegistrationPost.class) QueueDto queueDto,
 														@PathVariable UUID idCompany){
 		
-		log.debug("POST createQueue queueDto received {} ", queueDto.toString());
+		log.info("POST createQueue queueDto received {} ", queueDto.toString());
         if(queueService.existsByDescription(queueDto.getDescription())){
             log.warn("Description {} is Already Taken ", queueDto.getDescription());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Description is Already Taken!");
@@ -55,13 +55,13 @@ public class QueueResources {
         QueueModel queueModel = queueService.save(queueDto, idCompany);
         
         log.debug("POST createQueue queueId saved {} ", queueModel.getQueueId());
-        log.info("Role saved successfully queueId {} ",  queueModel.getQueueId());
+        log.info("Queue saved successfully queueId {} ",  queueModel.getQueueId());
         
 		return ResponseEntity.status(HttpStatus.CREATED).body(queueModel);
 	}
 	
 	@PreAuthorize("hasAnyRole('EMPLOYEE')")
-	@PutMapping("{idCompany}/status/{idQueue}")
+	@PutMapping("/{idCompany}/status/{idQueue}")
 	private ResponseEntity<Object> alternateStatus(@RequestBody @Validated (QueueDto.QueueView.QueueStatusPut.class)
 														@JsonView(QueueDto.QueueView.QueueStatusPut.class) QueueDto queueDto,
 														@PathVariable UUID idCompany,
@@ -91,7 +91,7 @@ public class QueueResources {
 	}
 	
 	@PreAuthorize("hasAnyRole('EMPLOYEE')")
-	@PutMapping("{idCompany}/{idQueue}")
+	@PutMapping("/{idCompany}/{idQueue}")
 	private ResponseEntity<Object> alterate(@RequestBody @Validated (QueueDto.QueueView.QueuePut.class)
 														@JsonView(QueueDto.QueueView.QueuePut.class) QueueDto queueDto,
 														@PathVariable UUID idCompany,

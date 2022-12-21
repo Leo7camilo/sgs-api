@@ -89,10 +89,10 @@ public class UserModel implements Serializable {
     private Set<RoleModel> roles = new HashSet<>();
 	
 	//@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(    name = "TB_USERS_COMPANY",
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "company_id"))
-	private Set<CompanyModel> companys = new HashSet<>();
+//	@ManyToMany(fetch = FetchType.LAZY)
+//	@JoinTable(    name = "TB_USERS_COMPANY",
+//          joinColumns = @JoinColumn(name = "user_id"),
+//          inverseJoinColumns = @JoinColumn(name = "company_id"))
+//	private Set<CompanyModel> companys = new HashSet<>();
 	
 }

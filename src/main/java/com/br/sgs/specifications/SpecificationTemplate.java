@@ -1,13 +1,20 @@
 package com.br.sgs.specifications;
 
+import java.util.Collection;
+import java.util.UUID;
+
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Root;
+
 import org.springframework.data.jpa.domain.Specification;
 
 import com.br.sgs.models.AttendenceModel;
+import com.br.sgs.models.ClientModel;
 import com.br.sgs.models.CompanyModel;
 import com.br.sgs.models.TerminalModel;
 
-import net.kaczmarzyk.spring.data.jpa.domain.GreaterThanOrEqual;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.GreaterThanOrEqual;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -32,7 +39,22 @@ public class SpecificationTemplate {
         @Spec(path = "idQueue", spec = Equal.class)
     })
 	public interface AttendenceSpec extends Specification<AttendenceModel> {}
-
+    
+    @And({
+        @Spec(path = "document", spec = Like.class),
+        @Spec(path = "name", spec = Like.class),
+        @Spec(path = "organization", spec = Like.class),
+	})
+	public interface ClientSpec extends Specification<ClientModel> {}
+    
+    
+    public static Specification<TerminalModel> terminalCompanyId(final UUID companyId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            return cb.and(cb.equal(company.get("companyId"), companyId));
+        };
+    }
     
     /*
     @And({
@@ -48,15 +70,7 @@ public class SpecificationTemplate {
     @Spec(path = "title", spec = Like.class)
     public interface LessonSpec extends Specification<LessonModel> {}
 
-    public static Specification<ModuleModel> moduleCourseId(final UUID courseId) {
-        return (root, query, cb) -> {
-            query.distinct(true);
-            Root<ModuleModel> module = root;
-            Root<CourseModel> course = query.from(CourseModel.class);
-            Expression<Collection<ModuleModel>> coursesModules = course.get("modules");
-            return cb.and(cb.equal(course.get("courseId"), courseId), cb.isMember(module, coursesModules));
-        };
-    }
+    
 
     public static Specification<LessonModel> lessonModuleId(final UUID moduleId) {
         return (root, query, cb) -> {
