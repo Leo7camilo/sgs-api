@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<UserModel, UUID>{
     @EntityGraph(attributePaths = "roles", type = EntityGraph.EntityGraphType.FETCH)
     Optional<UserModel> findById(UUID userId);
 
+	Optional<UserModel> findByUserIdAndCompanyCompanyId(UUID userId, UUID companyId);
+
 }

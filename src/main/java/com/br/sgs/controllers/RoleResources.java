@@ -36,7 +36,7 @@ public class RoleResources {
 	@Autowired
 	CompanyService companyService;
 	
-	@PostMapping("{idCompany}")
+	@PostMapping("/{idCompany}")
 	private ResponseEntity<Object> createRole(@RequestBody @Validated (RoleDto.RoleView.RegistrationPost.class)
 														@JsonView(RoleDto.RoleView.RegistrationPost.class) RoleDto roleDto,
 														@PathVariable UUID idCompany){
@@ -59,7 +59,7 @@ public class RoleResources {
 	}
 	
 	
-	@PutMapping("{idCompany}/{idRole}")
+	@PutMapping("/{idCompany}/{idRole}")
 	private ResponseEntity<Object> alternateStatus(@RequestBody @Validated (RoleDto.RoleView.RoleStatusPut.class)
 														@JsonView(RoleDto.RoleView.RoleStatusPut.class) RoleDto roleDto,
 														@PathVariable UUID idCompany,

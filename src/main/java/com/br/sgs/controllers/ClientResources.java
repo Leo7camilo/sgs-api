@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.sgs.dtos.ClientDto;
+import com.br.sgs.exception.CompanyNotFound;
 import com.br.sgs.models.ClientModel;
-import com.br.sgs.models.CompanyModel;
 import com.br.sgs.services.ClientService;
 import com.br.sgs.services.CompanyService;
 import com.br.sgs.specifications.SpecificationTemplate;
@@ -42,8 +42,8 @@ public class ClientResources {
 	@Autowired
 	CompanyService companyService;
 
-	@PostMapping("/{idCompany}")
-	private ResponseEntity<Object> createClient(@PathVariable UUID idCompany,
+	@PostMapping("/{companyId}")
+	private ResponseEntity<Object> createClient(@PathVariable UUID companyId,
 			@RequestBody @Validated(ClientDto.ClientView.RegistrationPost.class) @JsonView(ClientDto.ClientView.RegistrationPost.class) ClientDto clientDto) {
 		log.debug("POST registerClient clientDto received {} ", clientDto.toString());
 
@@ -52,14 +52,14 @@ public class ClientResources {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Document is Already Taken!");
 		}
 
-		ClientModel clientModel = clientService.save(clientDto, idCompany);
+		ClientModel clientModel = clientService.save(clientDto, companyId);
 		log.debug("POST registerClient clientId saved {} ", clientModel.getIdClient());
 		log.info("User saved successfully clientId {} ", clientModel.getIdClient());
 		return ResponseEntity.status(HttpStatus.CREATED).body(clientModel);
 	}
 
-	@PutMapping("{idCompany}/{idClient}")
-	public ResponseEntity<Object> updateClient(@PathVariable(value = "idCompany") UUID idCompany,
+	@PutMapping("/{companyId}/{idClient}")
+	public ResponseEntity<Object> updateClient(@PathVariable(value = "companyId") UUID companyId,
 			@PathVariable(value = "idClient") UUID idClient,
 			@RequestBody @Validated(ClientDto.ClientView.ClientPut.class) @JsonView(ClientDto.ClientView.ClientPut.class) ClientDto clientDto) {
 		log.debug("PUT updateClient clientDto received {} ", clientDto.toString());
@@ -69,34 +69,34 @@ public class ClientResources {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found.");
 		}
 
-		if (companyService.existsById(idCompany)) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found.");
+		if (!companyService.existsById(companyId)) {
+			log.warn("CompanyId {} not found ", companyId);
+			throw new CompanyNotFound();
 		}
 
-		var userModel = clientService.update(clientDto, idCompany, idClient);
+		var userModel = clientService.update(clientDto, companyId, clientModelOptional.get());
 		return ResponseEntity.status(HttpStatus.OK).body(userModel);
 
 	}
 	
 	@GetMapping("/{idCompany}/{idClient}")
 	private ResponseEntity<ClientModel> getCompany(@PathVariable(value = "idCompany") UUID idCompany,
-														@PathVariable(value = "idCompany") UUID idClient){
+														@PathVariable(value = "idClient") UUID idClient){
 		Optional<ClientModel> client = clientService.findByIdAndCompanyId(idClient, idCompany);
 		return client.isPresent() ? ResponseEntity.ok(client.get()) : ResponseEntity.notFound().build();
 	}
 	
-	@GetMapping("/by-company/{idCompany}")
+	@GetMapping("/by-company/{companyId}")
     public ResponseEntity<Page<ClientModel>> getAllCompany(SpecificationTemplate.ClientSpec spec,
     								@PageableDefault(page = 0, size = 10, sort = "idClient", direction = Sort.Direction.ASC) Pageable pageable,
-    								@PathVariable(value = "idCompany") UUID idCompany){
+    								@PathVariable(value = "companyId") UUID companyId){
 		    
-		if (companyService.existsById(idCompany)) {
-			//return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Company not found.");
+		if (!companyService.existsById(companyId)) {
+			log.warn("CompanyId {} not found ", companyId);
+			throw new CompanyNotFound();
 		}
-		
-        return ResponseEntity.status(HttpStatus.OK).body(clientService.getAllClients(spec, pageable, idCompany));
+		return ResponseEntity.status(HttpStatus.OK).body(clientService.findAllByCompany(SpecificationTemplate.clientCompanyId(companyId).and(spec), pageable));
     }
-	
 	
 	
 	

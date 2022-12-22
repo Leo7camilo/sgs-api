@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.br.sgs.dtos.ClientDto;
@@ -60,10 +61,12 @@ public class ClientServiceImpl implements ClientService{
 	}
 
 	@Override
-	public ClientModel update(ClientDto clientDto, UUID idCompany, UUID idClient) {
+	public ClientModel update(ClientDto clientDto, UUID idCompany, ClientModel clientOptional) {
 		var clientModel = new ClientModel();
+		BeanUtils.copyProperties(clientOptional, clientModel);
 		BeanUtils.copyProperties(clientDto, clientModel);
-		clientModel.setIdClient(idClient);
+		clientModel.setOrganization(clientOptional.getOrganization());
+		clientModel.setIdClient(clientOptional.getIdClient());
 		return clientRepository.save(clientModel);
 	}
 
@@ -75,6 +78,11 @@ public class ClientServiceImpl implements ClientService{
 	@Override
 	public Page<ClientModel> getAllClients(ClientSpec spec, Pageable pageable, UUID idCompany) {
 		return clientRepository.findByCompanyCompanyId(idCompany, spec, pageable);
+	}
+
+	@Override
+	public Page<ClientModel> findAllByCompany(Specification<ClientModel> spec, Pageable pageable) {
+		return clientRepository.findAll(spec, pageable);
 	}
 
 }

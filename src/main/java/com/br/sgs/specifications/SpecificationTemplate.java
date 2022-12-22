@@ -1,9 +1,7 @@
 package com.br.sgs.specifications;
 
-import java.util.Collection;
 import java.util.UUID;
 
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -49,6 +47,15 @@ public class SpecificationTemplate {
     
     
     public static Specification<TerminalModel> terminalCompanyId(final UUID companyId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            return cb.and(cb.equal(company.get("companyId"), companyId));
+        };
+    }
+    
+    
+    public static Specification<ClientModel> clientCompanyId(final UUID companyId) {
         return (root, query, cb) -> {
             query.distinct(true);
             Root<CompanyModel> company = query.from(CompanyModel.class);

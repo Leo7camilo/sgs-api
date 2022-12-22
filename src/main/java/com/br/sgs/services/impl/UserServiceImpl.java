@@ -57,4 +57,11 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findByUsername(username);
 	}
 
+	@Override
+	public Optional<UserModel> findByIdAndCompanyId(UUID userId, UUID companyId) {
+		return userRepository.findByUserIdAndCompanyCompanyId(userId, companyId);
+	}
+	
+	
+
 }

@@ -16,5 +16,7 @@ public interface UserService {
 	
 	Optional<UserModel> findByUsername(String username);
 
+	Optional<UserModel> findByIdAndCompanyId(UUID userId,  UUID companyId);
+
 
 }

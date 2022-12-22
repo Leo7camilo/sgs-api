@@ -1,9 +1,10 @@
 package com.br.sgs.controllers;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,14 +20,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.sgs.config.security.JwtProvider;
 import com.br.sgs.dtos.JwtDto;
 import com.br.sgs.dtos.LoginDto;
 import com.br.sgs.dtos.UserDto;
+import com.br.sgs.exception.CompanyNotFound;
+import com.br.sgs.exception.DocumentAlredyInUse;
 import com.br.sgs.models.UserModel;
+import com.br.sgs.services.CompanyService;
 import com.br.sgs.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -42,6 +45,9 @@ public class AuthUserController {
 	UserService userService;
 	
 	@Autowired
+	CompanyService companyService;
+	
+	@Autowired
     JwtProvider jwtProvider;
 
     @Autowired
@@ -53,7 +59,7 @@ public class AuthUserController {
 		log.debug("POST registerUser userDto received {} ", userDto.toString());
         if(userService.existsByEmail(userDto.getEmail())){
             log.warn("Email {} is Already Taken ", userDto.getEmail());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Email is Already Taken!");
+            throw new DocumentAlredyInUse();
         }
         UserModel userModel = userService.save(userDto);
         
@@ -64,10 +70,35 @@ public class AuthUserController {
 	}
 	
 	@GetMapping("/{userId}")
-	private ResponseEntity<Object> getUSerById(@PathVariable UUID userId){
-		log.info("GET getUSerById userId received 1{} ", userId);
-		//log.info("GET getUSerById userId received 2{} ", UUID.fromString(userId));
-		return ResponseEntity.status(HttpStatus.CREATED).body(userService.findById(userId));
+	private ResponseEntity<Object> getUserById(@PathVariable UUID userId){
+		log.info("GET getUSerById userId received {} ", userId);
+		
+		Optional<UserModel> usermodel = userService.findById(userId);
+		
+		if(!usermodel.isPresent()) {
+			throw new NoSuchElementException();
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(usermodel.get());
+	}
+	
+	@GetMapping("/{companyId}/{userId}")
+	private ResponseEntity<Object> getUserByIdAndCompanyId(@PathVariable(value="userId") UUID userId,
+			  											  @PathVariable(value="companyId") UUID companyId){
+		log.info("GET getUserByIdAndCompanyId userId received {} ", userId);
+		log.info("GET getUserByIdAndCompanyId companyId received {} ", companyId);
+		
+		if (!companyService.existsById(companyId)) {
+			log.warn("CompanyId {} not found ", companyId);
+			throw new CompanyNotFound();
+		}
+		
+		Optional<UserModel> usermodel = userService.findByIdAndCompanyId(userId, companyId);
+		if(!usermodel.isPresent()) {
+			throw new NoSuchElementException();
+		}
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(usermodel.get());
 	}
 	
 	

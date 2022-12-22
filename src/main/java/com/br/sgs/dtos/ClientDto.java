@@ -21,9 +21,9 @@ public class ClientDto {
         public static interface ClientPut {}
     }
 	
-    @NotBlank(groups = UserView.RegistrationPost.class)
+    @NotBlank(groups = {UserView.RegistrationPost.class, ClientView.ClientPut.class})
     @Size(min = 4, max = 50, groups = ClientView.RegistrationPost.class)
-    @JsonView(ClientView.RegistrationPost.class)
+    @JsonView({ClientView.RegistrationPost.class, ClientView.ClientPut.class})
 	private String name;
 	
     @CPF(groups = {ClientView.RegistrationPost.class, ClientView.ClientPut.class})
