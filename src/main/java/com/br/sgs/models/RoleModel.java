@@ -1,6 +1,8 @@
 package com.br.sgs.models;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -19,6 +21,7 @@ import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.br.sgs.enums.RoleState;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
@@ -55,6 +58,9 @@ public class RoleModel implements GrantedAuthority, Serializable {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
     private RoleState status;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+	private LocalDateTime dtUpdate;
 	
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)

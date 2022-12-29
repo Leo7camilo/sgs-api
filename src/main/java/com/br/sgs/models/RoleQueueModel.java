@@ -1,8 +1,6 @@
 package com.br.sgs.models;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;

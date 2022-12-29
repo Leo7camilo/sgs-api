@@ -7,6 +7,10 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,9 +32,13 @@ import com.br.sgs.dtos.LoginDto;
 import com.br.sgs.dtos.UserDto;
 import com.br.sgs.exception.CompanyNotFound;
 import com.br.sgs.exception.DocumentAlredyInUse;
+import com.br.sgs.exception.UserNameAlredyInUse;
+import com.br.sgs.models.CompanyModel;
+import com.br.sgs.models.TerminalModel;
 import com.br.sgs.models.UserModel;
 import com.br.sgs.services.CompanyService;
 import com.br.sgs.services.UserService;
+import com.br.sgs.specifications.SpecificationTemplate;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.extern.log4j.Log4j2;
@@ -53,15 +61,26 @@ public class AuthUserController {
     @Autowired
     AuthenticationManager authenticationManager;
 	
-	@PostMapping("/signup")
-	private ResponseEntity<Object> createUser(@RequestBody @Validated (UserDto.UserView.RegistrationPost.class)
+	@PostMapping("/{companyId}/signup")
+	private ResponseEntity<Object> createUser(@PathVariable UUID companyId, @RequestBody @Validated (UserDto.UserView.RegistrationPost.class)
 														@JsonView(UserDto.UserView.RegistrationPost.class) UserDto userDto){
 		log.debug("POST registerUser userDto received {} ", userDto.toString());
         if(userService.existsByEmail(userDto.getEmail())){
             log.warn("Email {} is Already Taken ", userDto.getEmail());
             throw new DocumentAlredyInUse();
         }
-        UserModel userModel = userService.save(userDto);
+        if(userService.existsByUsername(userDto.getUsername())){
+            log.warn("Username {} is Already Taken ", userDto.getUsername());
+            throw new UserNameAlredyInUse();
+        }
+        
+        Optional<CompanyModel> company = companyService.findById(companyId);
+        if(!company.isPresent()) {
+        	log.warn("CompanyId {} not found ", companyId);
+			throw new CompanyNotFound();
+        }
+        
+        UserModel userModel = userService.save(userDto, company.get());
         
         log.debug("POST registerUser userId saved {} ", userModel.getUserId());
         log.info("User saved successfully userId {} ", userModel.getUserId());
@@ -69,18 +88,18 @@ public class AuthUserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
 	}
 	
-	@GetMapping("/{userId}")
-	private ResponseEntity<Object> getUserById(@PathVariable UUID userId){
-		log.info("GET getUSerById userId received {} ", userId);
-		
-		Optional<UserModel> usermodel = userService.findById(userId);
-		
-		if(!usermodel.isPresent()) {
-			throw new NoSuchElementException();
-		}
-		
-		return ResponseEntity.status(HttpStatus.OK).body(usermodel.get());
-	}
+//	@GetMapping("/{userId}")
+//	private ResponseEntity<Object> getUserById(@PathVariable UUID userId){
+//		log.info("GET getUSerById userId received {} ", userId);
+//		
+//		Optional<UserModel> usermodel = userService.findById(userId);
+//		
+//		if(!usermodel.isPresent()) {
+//			throw new NoSuchElementException();
+//		}
+//		
+//		return ResponseEntity.status(HttpStatus.OK).body(usermodel.get());
+//	}
 	
 	@GetMapping("/{companyId}/{userId}")
 	private ResponseEntity<Object> getUserByIdAndCompanyId(@PathVariable(value="userId") UUID userId,
@@ -98,8 +117,16 @@ public class AuthUserController {
 			throw new NoSuchElementException();
 		}
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(usermodel.get());
+		return ResponseEntity.status(HttpStatus.OK).body(usermodel.get());
 	}
+	
+	@GetMapping("/{companyId}")
+    public ResponseEntity<Page<UserModel>> getAllUserByCompany(@PathVariable(value="companyId") UUID companyId,
+    								SpecificationTemplate.UserSpec spec,
+    								@PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable){
+		return ResponseEntity.status(HttpStatus.OK).body(userService.findAllByCompany(SpecificationTemplate.userCompanyId(companyId).and(spec), pageable));
+    }
+	
 	
 	
 	@PostMapping("/login")

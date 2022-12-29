@@ -30,19 +30,20 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
     private String email;
-    //private Set<CompanyModel> companys;
+    private CompanyModel company;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(UserModel userModel) {
         List<GrantedAuthority> authorities = userModel.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());   
         return new UserDetailsImpl(
                 userModel.getUserId(),
                 userModel.getFullName(),
                 userModel.getUsername(),
                 userModel.getPassword(),
                 userModel.getEmail(),
+                userModel.getCompany(),
                 authorities);
     }
 
@@ -59,6 +60,10 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public String getUsername() {
         return this.username;
+    }
+    
+    public CompanyModel getCompany() {
+        return this.company;
     }
 
     @Override

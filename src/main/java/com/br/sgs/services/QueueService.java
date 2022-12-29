@@ -4,7 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.br.sgs.dtos.QueueDto;
+import com.br.sgs.models.QueueHistModel;
 import com.br.sgs.models.QueueModel;
 
 public interface QueueService {
@@ -15,7 +21,7 @@ public interface QueueService {
 
 	Optional<QueueModel> findById(UUID idQueue);
 
-	QueueModel updateStatus(QueueModel queueModel, UUID idCompany);
+	QueueModel updateStatus(QueueModel queueModel, UUID idCompany, UserDetails userDetails);
 
 	boolean existsById(UUID id);
 
@@ -23,4 +29,13 @@ public interface QueueService {
 
 	List<QueueModel> orderListQueueByPriority(List<UUID> idQueueList);
 
+	Optional<QueueModel> findByIdAndCompanyId(UUID queueId, UUID companyId);
+
+	Page<QueueModel> findAllByCompany(Specification<QueueModel> spec, Pageable pageable);
+
+	Page<QueueHistModel> findAllHistByCompany(Specification<QueueHistModel> spec, Pageable pageable);
+
+	List<QueueModel> findByCompanyId(UUID companyId);
+
+	Page<QueueHistModel> findAllHistByQueueIn(Specification<QueueHistModel> spec, Pageable pageable);
 }

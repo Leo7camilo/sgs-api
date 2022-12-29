@@ -1,6 +1,7 @@
 package com.br.sgs.dtos;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.br.sgs.enums.RoleState;
@@ -19,14 +20,14 @@ public class RoleDto {
 	    public static interface RoleStatusPut {}
 	}
 	
-	@NotBlank(groups = RoleView.RegistrationPost.class)
+	@NotBlank(groups = {RoleView.RegistrationPost.class, RoleView.RolePut.class})
 	@Size(min = 4, max = 50, groups = {RoleView.RegistrationPost.class, RoleView.RolePut.class})
-	@JsonView(RoleView.RegistrationPost.class)
+	@JsonView({RoleView.RegistrationPost.class, RoleView.RolePut.class})
 	private String description;
 	
-	@NotBlank(groups = RoleView.RegistrationPost.class)
+	@NotBlank(groups = {RoleView.RegistrationPost.class, RoleView.RolePut.class})
 	@Size(min = 4, max = 50, groups = {RoleView.RegistrationPost.class, RoleView.RolePut.class})
-	@JsonView(RoleView.RegistrationPost.class)
+	@JsonView({RoleView.RegistrationPost.class, RoleView.RolePut.class})
 	private String value;
 	
 	@NotBlank(groups = RoleView.RoleStatusPut.class)

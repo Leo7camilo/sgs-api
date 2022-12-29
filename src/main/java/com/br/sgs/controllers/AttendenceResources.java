@@ -37,6 +37,11 @@ import lombok.extern.log4j.Log4j2;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("${api.version}/attendence")
 public class AttendenceResources {
+	
+	
+	/**
+	 * Cria regra para chamada do client
+	 */
 
 	@Autowired
 	AttendenceService attendenceService;
@@ -57,12 +62,12 @@ public class AttendenceResources {
 
 		log.info("POST createAttendence received {} ", attendenceDto.toString());
 
-		if (clientService.existsById(idClient)) {
+		if (!clientService.existsById(idClient)) {
 			log.warn("Client {} Not Found ", idClient);
 			throw new NoSuchElementException();
 		}
 
-		if (companyService.existsById(idCompany)) {
+		if (!companyService.existsById(idCompany)) {
 			log.warn("Company {} not found. ", idCompany);
 			throw new NoSuchElementException();
 		}
@@ -78,7 +83,7 @@ public class AttendenceResources {
 		
 		log.info("GET getAllAttendence received {} ", spec.toString());
 		
-		if (companyService.existsById(idCompany)) {
+		if (!companyService.existsById(idCompany)) {
 			log.warn("Company {} not found. ", idCompany);
 			throw new NoSuchElementException();
 		}
@@ -93,12 +98,12 @@ public class AttendenceResources {
 
 		log.info("PUT createAttendence received {} ", attendenceDto.toString());
 
-		if (queueService.existsById(idQueue)) {
+		if (!queueService.existsById(idQueue)) {
 			log.info("Queue {} Not Found ", idQueue);
 			throw new NoSuchElementException();
 		}
 
-		if (companyService.existsById(idCompany)) {
+		if (!companyService.existsById(idCompany)) {
 			log.info("Company {} not found. ", idCompany);
 			throw new NoSuchElementException();
 		}
@@ -113,12 +118,12 @@ public class AttendenceResources {
 
 		log.info("DELETE deleteClient received {} | {} | {}", idCompany, idQueue, idClient);
 
-		if (queueService.existsById(idQueue)) {
+		if (!queueService.existsById(idQueue)) {
 			log.info("Queue {} Not Found ", idQueue);
 			throw new NoSuchElementException();
 		}
 
-		if (companyService.existsById(idCompany)) {
+		if (!companyService.existsById(idCompany)) {
 			log.info("Company {} not found. ", idCompany);
 			throw new NoSuchElementException();
 		}

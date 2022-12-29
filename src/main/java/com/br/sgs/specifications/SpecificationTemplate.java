@@ -1,7 +1,9 @@
 package com.br.sgs.specifications;
 
+import java.util.Collection;
 import java.util.UUID;
 
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -9,7 +11,11 @@ import org.springframework.data.jpa.domain.Specification;
 import com.br.sgs.models.AttendenceModel;
 import com.br.sgs.models.ClientModel;
 import com.br.sgs.models.CompanyModel;
+import com.br.sgs.models.QueueHistModel;
+import com.br.sgs.models.QueueModel;
+import com.br.sgs.models.RoleModel;
 import com.br.sgs.models.TerminalModel;
+import com.br.sgs.models.UserModel;
 
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.GreaterThanOrEqual;
@@ -46,6 +52,34 @@ public class SpecificationTemplate {
 	public interface ClientSpec extends Specification<ClientModel> {}
     
     
+    @And({
+        @Spec(path = "description", spec = Like.class)
+    })
+	public interface RoleSpec extends Specification<RoleModel> {}
+    
+   
+    @And({
+        @Spec(path = "status", spec = Equal.class),
+        @Spec(path = "description", spec = Like.class)
+    })
+	public interface QueueSpec extends Specification<QueueModel> {}
+    
+    @And({
+        @Spec(path = "idQueueHist", spec = Equal.class),
+        @Spec(path = "description", spec = Like.class)
+    })
+	public interface QueueHistSpec extends Specification<QueueHistModel> {}
+
+    
+    @And({
+        @Spec(path = "document", spec = Equal.class),
+        @Spec(path = "username", spec = Like.class),
+        @Spec(path = "email", spec = Like.class),
+        @Spec(path = "fullName", spec = Like.class),
+	})
+	public interface UserSpec extends Specification<UserModel> {}
+    
+    
     public static Specification<TerminalModel> terminalCompanyId(final UUID companyId) {
         return (root, query, cb) -> {
             query.distinct(true);
@@ -56,6 +90,40 @@ public class SpecificationTemplate {
     
     
     public static Specification<ClientModel> clientCompanyId(final UUID companyId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            return cb.and(cb.equal(company.get("companyId"), companyId));
+        };
+    }
+    
+    public static Specification<RoleModel> roleCompanyId(final UUID companyId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            return cb.and(cb.equal(company.get("companyId"), companyId));
+        };
+    }
+    
+    public static Specification<QueueModel> queueCompanyId(final UUID companyId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            return cb.and(cb.equal(company.get("companyId"), companyId));
+        };
+    }
+    
+    
+    public static Specification<QueueHistModel> queueHistCompanyId(final UUID companyId, final UUID queueId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<QueueHistModel> queueHistModel = root;
+            Root<QueueModel> queue = query.from(QueueModel.class);            
+            return cb.and(cb.equal(queue.get("company").get("companyId"), companyId), cb.equal(queueHistModel.get("queue").get("queueId"), queueId));
+        };
+    }
+    
+    public static Specification<UserModel> userCompanyId(final UUID companyId) {
         return (root, query, cb) -> {
             query.distinct(true);
             Root<CompanyModel> company = query.from(CompanyModel.class);

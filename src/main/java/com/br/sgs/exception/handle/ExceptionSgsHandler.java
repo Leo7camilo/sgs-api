@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.br.sgs.exception.DocumentAlredyInUse;
 import com.br.sgs.exception.NameAlredyInUse;
+import com.br.sgs.exception.RoleNotFound;
 
 @ControllerAdvice
 public class ExceptionSgsHandler extends ResponseEntityExceptionHandler{

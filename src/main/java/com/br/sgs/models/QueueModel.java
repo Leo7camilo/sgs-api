@@ -1,8 +1,6 @@
 package com.br.sgs.models;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -12,6 +10,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -48,8 +48,9 @@ public class QueueModel implements Serializable {
 	@Enumerated(EnumType.STRING)
     private QueueState status;
 	
-	@NotNull
-	private UUID idCompany;
+	@ManyToOne
+	@JoinColumn(name = "companyId")
+	private CompanyModel company;
 	
 	@NotNull
 	private Integer priority;

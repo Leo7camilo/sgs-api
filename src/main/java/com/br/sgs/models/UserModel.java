@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 
@@ -82,17 +83,21 @@ public class UserModel implements Serializable {
 	private UserStatus userStatus;
 	
 	//@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(    name = "TB_USER_ROLES",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleModel> roles = new HashSet<>();
 	
 	//@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-//	@ManyToMany(fetch = FetchType.LAZY)
+//	@ManyToMany(fetch = FetchType.EAGER)
 //	@JoinTable(    name = "TB_USERS_COMPANY",
 //          joinColumns = @JoinColumn(name = "user_id"),
 //          inverseJoinColumns = @JoinColumn(name = "company_id"))
 //	private Set<CompanyModel> companys = new HashSet<>();
-	
+//	
+	@ManyToOne
+	@JoinColumn(name = "companyId")
+	private CompanyModel company;
+    
 }

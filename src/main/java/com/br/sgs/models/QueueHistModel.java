@@ -9,10 +9,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -36,17 +39,20 @@ public class QueueHistModel implements Serializable {
 	@Type(type="uuid-char")
 	private UUID idQueueHist;
 	
-	@NotNull
-	private UUID idQueue;
+	@ManyToOne
+	@JoinColumn(name = "queueId")
+	private QueueModel queue;
 	
 	@NotNull
 	@Column(nullable = false, length = 150)
 	private String description;
 	
-	@NotNull
-	private UserModel idUser;
+	@ManyToOne
+	@JoinColumn(name = "userId")
+	private UserModel user;
 	
 	@NotNull
+	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
 	private LocalDateTime tsChange;
 
 }

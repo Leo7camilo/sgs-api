@@ -31,4 +31,7 @@ public class AttendenceDto {
 	@NotBlank(groups = AttendenceView.CallsPost.class)
 	@JsonView(AttendenceView.CallsPost.class)
 	private UUID idUser;
+	
+	
+	//POSTO DE TRABALHO
 }

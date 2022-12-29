@@ -21,6 +21,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -63,4 +64,8 @@ public class CompanyModel implements Serializable {
 //	@EqualsAndHashCode.Exclude
 //    private Set<UserModel> users;
 	
+	@JsonIgnore
+	public String getCompany() {
+		 return this.companyId.toString();
+	}
 }
