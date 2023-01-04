@@ -1,9 +1,7 @@
 package com.br.sgs.specifications;
 
-import java.util.Collection;
 import java.util.UUID;
 
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -11,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import com.br.sgs.models.AttendenceModel;
 import com.br.sgs.models.ClientModel;
 import com.br.sgs.models.CompanyModel;
+import com.br.sgs.models.ProfileModel;
 import com.br.sgs.models.QueueHistModel;
 import com.br.sgs.models.QueueModel;
 import com.br.sgs.models.RoleModel;
@@ -35,7 +34,11 @@ public class SpecificationTemplate {
         @Spec(path = "name", spec = Like.class)
     })
 	public interface TerminalSpec extends Specification<TerminalModel> {}
-
+    
+    @And({
+        @Spec(path = "description", spec = Like.class)
+    })
+	public interface ProfileSpec extends Specification<ProfileModel> {}
     
     @And({
         @Spec(path = "dtCreated", spec = GreaterThanOrEqual.class),
@@ -81,6 +84,14 @@ public class SpecificationTemplate {
     
     
     public static Specification<TerminalModel> terminalCompanyId(final UUID companyId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            return cb.and(cb.equal(company.get("companyId"), companyId));
+        };
+    }
+    
+    public static Specification<ProfileModel> profileCompanyId(final UUID companyId) {
         return (root, query, cb) -> {
             query.distinct(true);
             Root<CompanyModel> company = query.from(CompanyModel.class);
