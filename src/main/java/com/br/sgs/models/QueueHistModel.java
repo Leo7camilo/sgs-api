@@ -37,7 +37,7 @@ public class QueueHistModel implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Type(type="uuid-char")
-	private UUID idQueueHist;
+	private UUID queueHistId;
 	
 	@ManyToOne
 	@JoinColumn(name = "queueId")

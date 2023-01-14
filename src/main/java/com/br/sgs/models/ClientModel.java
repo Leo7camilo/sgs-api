@@ -32,7 +32,7 @@ public class ClientModel implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Type(type="uuid-char")
-	private UUID idClient;
+	private UUID clientId;
 	
 	@NotNull
 	@Column(nullable = false, length = 150)

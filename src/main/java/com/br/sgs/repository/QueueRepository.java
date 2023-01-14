@@ -21,4 +21,6 @@ public interface QueueRepository extends JpaRepository<QueueModel, UUID>, JpaSpe
 
 	List<QueueModel> findAllByCompanyCompanyId(UUID companyId);
 
+	List<QueueModel> findAllByQueueIdInOrderByPriority(List<UUID> idQueueList);
+
 }

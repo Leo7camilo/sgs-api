@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -17,19 +17,19 @@ public class AttendenceDto {
 	
 	public interface AttendenceView {
 	    public static interface RegistrationPost {}
-	    public static interface CallsPost {}
+	    public static interface Calls {}
 	}
 	
-	@NotBlank(groups = AttendenceView.RegistrationPost.class)
+	@NotNull(groups = AttendenceView.RegistrationPost.class)
 	@JsonView(AttendenceView.RegistrationPost.class)
 	private List<UUID> idQueueList = new ArrayList<>();
 	
-	@NotBlank(groups = AttendenceView.RegistrationPost.class)
+	@NotNull(groups = AttendenceView.RegistrationPost.class)
 	@JsonView(AttendenceView.RegistrationPost.class)
-	private Long passaword;
+	private Integer passaword;
 	
-	@NotBlank(groups = AttendenceView.CallsPost.class)
-	@JsonView(AttendenceView.CallsPost.class)
+	@NotNull(groups = AttendenceView.Calls.class)
+	@JsonView(AttendenceView.Calls.class)
 	private UUID idUser;
 	
 	

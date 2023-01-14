@@ -53,18 +53,17 @@ public class ClientResources {
 		}
 
 		ClientModel clientModel = clientService.save(clientDto, companyId);
-		log.debug("POST registerClient clientId saved {} ", clientModel.getIdClient());
-		log.info("User saved successfully clientId {} ", clientModel.getIdClient());
+		log.info("User saved successfully clientId {} ", clientModel.getClientId());
 		return ResponseEntity.status(HttpStatus.CREATED).body(clientModel);
 	}
 
-	@PutMapping("/{companyId}/{idClient}")
+	@PutMapping("/{companyId}/{clientId}")
 	public ResponseEntity<Object> updateClient(@PathVariable(value = "companyId") UUID companyId,
-			@PathVariable(value = "idClient") UUID idClient,
+			@PathVariable(value = "clientId") UUID clientId,
 			@RequestBody @Validated(ClientDto.ClientView.ClientPut.class) @JsonView(ClientDto.ClientView.ClientPut.class) ClientDto clientDto) {
-		log.debug("PUT updateClient clientDto received {} ", clientDto.toString());
+		log.info("PUT updateClient clientDto received {} ", clientDto.toString());
 
-		Optional<ClientModel> clientModelOptional = clientService.findById(idClient);
+		Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
 		if (!clientModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found.");
 		}
@@ -88,7 +87,7 @@ public class ClientResources {
 	
 	@GetMapping("/by-company/{companyId}")
     public ResponseEntity<Page<ClientModel>> getAllCompany(SpecificationTemplate.ClientSpec spec,
-    								@PageableDefault(page = 0, size = 10, sort = "idClient", direction = Sort.Direction.ASC) Pageable pageable,
+    								@PageableDefault(page = 0, size = 10, sort = "clientId", direction = Sort.Direction.ASC) Pageable pageable,
     								@PathVariable(value = "companyId") UUID companyId){
 		    
 		if (!companyService.existsById(companyId)) {

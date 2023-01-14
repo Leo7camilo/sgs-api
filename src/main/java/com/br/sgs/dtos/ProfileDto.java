@@ -1,6 +1,11 @@
 package com.br.sgs.dtos;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.br.sgs.enums.ProfileState;
@@ -15,6 +20,7 @@ public class ProfileDto {
 	
 	public interface ProfileView {
 	    public static interface RegistrationPost {}
+	    public static interface GrantPermission {}
 	    public static interface ProfilePut {}
 	    public static interface ProfileStatusPut {}
 	}
@@ -28,5 +34,9 @@ public class ProfileDto {
 	@Size(min = 4, max = 50, groups = ProfileView.ProfileStatusPut.class)
 	@JsonView(ProfileView.ProfileStatusPut.class)
 	private ProfileState status;
+	
+	@NotNull(groups = ProfileView.GrantPermission.class)
+	@JsonView(ProfileView.GrantPermission.class)
+	private Set<UUID> queues = new HashSet<>();
  
 }

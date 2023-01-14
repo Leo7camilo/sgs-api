@@ -49,10 +49,12 @@ public class ProfileModel implements Serializable{
 	@NotNull
 	private String description;
 	
+	@NotNull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
     private ProfileState status;
 	
+	@NotNull
 	@Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
 	private LocalDateTime dtChange;
@@ -63,6 +65,7 @@ public class ProfileModel implements Serializable{
             inverseJoinColumns = @JoinColumn(name = "queue_id"))
     private Set<QueueModel> queues = new HashSet<>();
 	
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "companyId")
 	private CompanyModel company;

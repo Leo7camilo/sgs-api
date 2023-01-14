@@ -160,7 +160,7 @@ public class QueueResources {
     public ResponseEntity<Page<QueueHistModel>> getAllHistByCompany(@PathVariable(value="companyId") UUID companyId,
     								@PathVariable(value="queueId") UUID queueId,
     								SpecificationTemplate.QueueHistSpec spec,
-    								@PageableDefault(page = 0, size = 10, sort = "idQueueHist", direction = Sort.Direction.ASC) Pageable pageable){	
+    								@PageableDefault(page = 0, size = 10, sort = "queueHistId", direction = Sort.Direction.ASC) Pageable pageable){	
 
 		return ResponseEntity.status(HttpStatus.OK).body(queueService.findAllHistByQueueIn(SpecificationTemplate.queueHistCompanyId(companyId, queueId).and(spec), pageable));
     }

@@ -57,7 +57,7 @@ public class ClientServiceImpl implements ClientService{
 	
 	@Override
 	public Optional<ClientModel> findByIdAndCompanyId(UUID idClient, UUID idCompany) {
-		return clientRepository.findByIdClientAndCompanyCompanyId(idClient, idCompany);
+		return clientRepository.findByClientIdAndCompanyCompanyId(idClient, idCompany);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class ClientServiceImpl implements ClientService{
 		BeanUtils.copyProperties(clientOptional, clientModel);
 		BeanUtils.copyProperties(clientDto, clientModel);
 		clientModel.setOrganization(clientOptional.getOrganization());
-		clientModel.setIdClient(clientOptional.getIdClient());
+		clientModel.setClientId(clientOptional.getClientId());
 		return clientRepository.save(clientModel);
 	}
 

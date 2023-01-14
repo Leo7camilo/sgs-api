@@ -6,9 +6,13 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -29,17 +33,17 @@ public class AttendenceModel implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Type(type="uuid-char")
-	private UUID idAttendence;
+	private UUID attendenceId;
 	
-	private Long password;
+	private Integer password;
 	
-	@NotNull
 	@Type(type="uuid-char")
 	private UUID idQueue;
 	
-	@NotNull
-	@Type(type="uuid-char")
-	private UUID idClient;
+	@ManyToOne
+	@JoinColumn(name = "clientId")
+	private ClientModel client;
+	
 	
 	@Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -50,12 +54,18 @@ public class AttendenceModel implements Serializable {
 	private LocalDateTime dtUpdated;
 	
 	@NotNull
-	@Column(nullable = false, length = 150)
+	@Column(nullable = false, length = 15)
+	@Enumerated(EnumType.STRING)
 	private AttendenceState status;
 	
-	@NotNull
-	@Type(type="uuid-char")
-	private UUID idCompany;
+	@ManyToOne
+	@JoinColumn(name = "companyId")
+	private CompanyModel company;
+	
+	@ManyToOne
+	@JoinColumn(name = "terminalId")
+	private TerminalModel terminal;
+	
 	
 	
 }

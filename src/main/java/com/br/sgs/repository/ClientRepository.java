@@ -19,7 +19,7 @@ public interface ClientRepository extends JpaRepository<ClientModel, UUID>, JpaS
 
 	Page<ClientModel> findAllByCompanyCompanyId(ClientSpec spec, Pageable pageable, UUID companyId);
 
-	Optional<ClientModel> findByIdClientAndCompanyCompanyId(UUID idClient, UUID idCompany);
+	Optional<ClientModel> findByClientIdAndCompanyCompanyId(UUID idClient, UUID idCompany);
 
 	Page<ClientModel> findByCompanyCompanyId(UUID idCompany, ClientSpec spec, Pageable pageable);
 

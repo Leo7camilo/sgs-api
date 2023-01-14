@@ -24,4 +24,8 @@ public interface ProfileService {
 
 	Page<ProfileModel> findAllByCompany(Specification<ProfileModel> spec, Pageable pageable);
 
+	ProfileModel grantPermission(ProfileModel profileModel, ProfileDto profileDto);
+
+	ProfileModel removePermission(ProfileModel profileModel, UUID queueId);
+
 }

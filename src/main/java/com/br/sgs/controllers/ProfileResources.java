@@ -59,11 +59,11 @@ public class ProfileResources {
 		return new ResponseEntity<Object>(profileModel, HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/status/{companyId}/{terminalId}")
+	@PutMapping("/status/{companyId}/{profileId}")
 	private ResponseEntity<Object> alternateStatus(@PathVariable(value="companyId") UUID companyId,
 												   @PathVariable(value="profileId") UUID profileId){
 		
-		log.debug("POST alternateStatus id received {} ", profileId);
+		log.debug("PUT alternateStatus id received {} ", profileId);
 		Optional<ProfileModel> profileModel = profileService.findById(profileId);
 		
         if(!profileModel.isPresent()){
@@ -81,13 +81,13 @@ public class ProfileResources {
 		
         var profielModelUpdated = profileService.updateStatus(profileModel.get());
         
-        log.debug("POST alternateStatus profileId saved {} ", profielModelUpdated.getProfileId());
+        log.debug("PUT alternateStatus profileId saved {} ", profielModelUpdated.getProfileId());
         log.info("Profile saved successfully terminalId {} ", profielModelUpdated.getProfileId());
         
 		return ResponseEntity.status(HttpStatus.OK).body(profielModelUpdated);
 	}
 
-	@GetMapping("/{companyId}/{terminalId}")
+	@GetMapping("/{companyId}/{profileId}")
 	private ResponseEntity<ProfileModel> getProfileByCompanyIdAndProfileId(@PathVariable(value="profileId") UUID profileId, 
 																			  @PathVariable(value="companyId") UUID companyId){
 		Optional<ProfileModel> profile = profileService.findByIdAndCompanyId(profileId, companyId);

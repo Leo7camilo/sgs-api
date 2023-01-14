@@ -31,19 +31,21 @@ public class SpecificationTemplate {
     public interface CompanySpec extends Specification<CompanyModel> {}
     
     @And({
-        @Spec(path = "name", spec = Like.class)
+        @Spec(path = "name", spec = Like.class),
+        @Spec(path = "status", spec = Equal.class)
     })
 	public interface TerminalSpec extends Specification<TerminalModel> {}
     
     @And({
-        @Spec(path = "description", spec = Like.class)
+        @Spec(path = "description", spec = Like.class),
+        @Spec(path = "status", spec = Equal.class)
     })
 	public interface ProfileSpec extends Specification<ProfileModel> {}
     
     @And({
         @Spec(path = "dtCreated", spec = GreaterThanOrEqual.class),
         @Spec(path = "status", spec = Equal.class),
-        @Spec(path = "idQueue", spec = Equal.class)
+        @Spec(path = "queueId", spec = Equal.class)
     })
 	public interface AttendenceSpec extends Specification<AttendenceModel> {}
     
@@ -52,8 +54,7 @@ public class SpecificationTemplate {
         @Spec(path = "name", spec = Like.class),
         @Spec(path = "organization", spec = Like.class),
 	})
-	public interface ClientSpec extends Specification<ClientModel> {}
-    
+	public interface ClientSpec extends Specification<ClientModel> {} 
     
     @And({
         @Spec(path = "description", spec = Like.class)
@@ -68,7 +69,7 @@ public class SpecificationTemplate {
 	public interface QueueSpec extends Specification<QueueModel> {}
     
     @And({
-        @Spec(path = "idQueueHist", spec = Equal.class),
+        @Spec(path = "queueHistId", spec = Equal.class),
         @Spec(path = "description", spec = Like.class)
     })
 	public interface QueueHistSpec extends Specification<QueueHistModel> {}
@@ -84,6 +85,14 @@ public class SpecificationTemplate {
     
     
     public static Specification<TerminalModel> terminalCompanyId(final UUID companyId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            return cb.and(cb.equal(company.get("companyId"), companyId));
+        };
+    }
+    
+    public static Specification<AttendenceModel> attendenceCompanyId(final UUID companyId) {
         return (root, query, cb) -> {
             query.distinct(true);
             Root<CompanyModel> company = query.from(CompanyModel.class);

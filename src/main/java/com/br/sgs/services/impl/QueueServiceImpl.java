@@ -131,7 +131,7 @@ public class QueueServiceImpl implements QueueService {
 
 	@Override
 	public List<QueueModel> orderListQueueByPriority(List<UUID> idQueueList) {
-		return queueRepository.findAllByQueueIdInOrderByQueueId(idQueueList);
+		return queueRepository.findAllByQueueIdInOrderByPriority(idQueueList);
 	}
 
 	@Override
