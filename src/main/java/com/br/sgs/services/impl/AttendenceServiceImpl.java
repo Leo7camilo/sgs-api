@@ -23,6 +23,7 @@ import com.br.sgs.models.CompanyModel;
 import com.br.sgs.models.QueueModel;
 import com.br.sgs.models.TerminalModel;
 import com.br.sgs.repository.AttendenceRepository;
+import com.br.sgs.services.AttendenceHistService;
 import com.br.sgs.services.AttendenceService;
 import com.br.sgs.services.QueueService;
 import com.br.sgs.specifications.SpecificationTemplate.AttendenceSpec;
@@ -32,6 +33,9 @@ public class AttendenceServiceImpl implements AttendenceService {
 
 	@Autowired
 	AttendenceRepository attendenceRepository;
+	
+	@Autowired
+	AttendenceHistService attendenceHistService;
 
 	@Autowired
 	QueueService queueService;
@@ -57,12 +61,11 @@ public class AttendenceServiceImpl implements AttendenceService {
 				attendenceModel = setAtributes(attendenceDto, company, client, attendenceModel);
 			}
 			attendenceModel.setIdQueue(listOrdened.get(i).getQueueId());
-			attendenceRepository.save(attendenceModel);
+			
+			saveHistory(attendenceRepository.save(attendenceModel));
 		}
 	}
-
 	
-
 	@Override
 	public Optional<AttendenceModel> findByIdQueue(UUID idQueue) {
 		return attendenceRepository.findByIdQueue(idQueue);
@@ -88,7 +91,8 @@ public class AttendenceServiceImpl implements AttendenceService {
 		attendenceModel.get().setDtUpdated(LocalDateTime.now(ZoneId.of("UTC")));
 		attendenceModel.get().setStatus(AttendenceState.IN_ATTENDENCE);
 		attendenceModel.get().setTerminal(terminal);
-		attendenceRepository.save(attendenceModel.get());
+		
+		saveHistory(attendenceRepository.save(attendenceModel.get()));
 	}
 
 	@Override
@@ -100,15 +104,16 @@ public class AttendenceServiceImpl implements AttendenceService {
 		}
 		attendenceModel.get().setDtUpdated(LocalDateTime.now(ZoneId.of("UTC")));
 		attendenceModel.get().setStatus(AttendenceState.ATTENDED);
-		attendenceRepository.save(attendenceModel.get());
-
+		saveHistory(attendenceRepository.save(attendenceModel.get()));
+		
 		List<AttendenceModel> attendenceModelList = attendenceRepository
-				.findByClientClientIdOrderByAttendenceId(idClient);
+				.findByClientClientIdAndIdQueueNotOrderByAttendenceId(idClient, idQueue);
 		if (attendenceModelList != null && attendenceModelList.size() > 0) {
 			attendenceModelList.get(0).setStatus(AttendenceState.WAITING);
-			attendenceRepository.save(attendenceModelList.get(0));
+			saveHistory(attendenceRepository.save(attendenceModelList.get(0)));
 		}
-
+		
+		attendenceRepository.deleteById(attendenceModel.get().getAttendenceId());
 	}
 
 	@Override
@@ -117,8 +122,8 @@ public class AttendenceServiceImpl implements AttendenceService {
 
 		attendenceModel.setTerminal(terminal);
 		attendenceModel.setStatus(AttendenceState.IN_ATTENDENCE);
-
-		attendenceRepository.save(attendenceModel);
+		
+		saveHistory(attendenceRepository.save(attendenceModel));
 	}
 
 	@Override
@@ -142,7 +147,7 @@ public class AttendenceServiceImpl implements AttendenceService {
 		attendenceModel.setDtUpdated(LocalDateTime.now(ZoneId.of("UTC")));
 		attendenceModel.setStatus(AttendenceState.WAITING);
 
-		attendenceRepository.save(attendenceModel);
+		saveHistory(attendenceRepository.save(attendenceModel));
 	}
 
 	@Override
@@ -161,7 +166,6 @@ public class AttendenceServiceImpl implements AttendenceService {
 	private AttendenceModel setAtributes(AttendenceDto attendenceDto, CompanyModel company, ClientModel client,
 			AttendenceModel attendenceModel) {
 		
-		
 		attendenceModel.setDtCreated(LocalDateTime.now(ZoneId.of("UTC")));
 		attendenceModel.setDtUpdated(LocalDateTime.now(ZoneId.of("UTC")));
 		attendenceModel.setClient(client);
@@ -170,6 +174,11 @@ public class AttendenceServiceImpl implements AttendenceService {
 		attendenceModel.setPassword(attendenceDto.getPassaword());
 		
 		return attendenceModel;
+	}
+	
+	
+	private void saveHistory(AttendenceModel attendenceModel) {
+		attendenceHistService.save(attendenceModel);
 	}
 
 }

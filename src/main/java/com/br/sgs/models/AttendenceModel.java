@@ -44,7 +44,6 @@ public class AttendenceModel implements Serializable {
 	@JoinColumn(name = "clientId")
 	private ClientModel client;
 	
-	
 	@Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
 	private LocalDateTime dtCreated;
@@ -65,7 +64,5 @@ public class AttendenceModel implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "terminalId")
 	private TerminalModel terminal;
-	
-	
 	
 }

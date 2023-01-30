@@ -6,6 +6,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import com.br.sgs.models.AttendenceHistModel;
 import com.br.sgs.models.AttendenceModel;
 import com.br.sgs.models.ClientModel;
 import com.br.sgs.models.CompanyModel;
@@ -18,6 +19,7 @@ import com.br.sgs.models.UserModel;
 
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.GreaterThanOrEqual;
+import net.kaczmarzyk.spring.data.jpa.domain.LessThanOrEqual;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
@@ -45,9 +47,21 @@ public class SpecificationTemplate {
     @And({
         @Spec(path = "dtCreated", spec = GreaterThanOrEqual.class),
         @Spec(path = "status", spec = Equal.class),
-        @Spec(path = "queueId", spec = Equal.class)
+        @Spec(path = "queueId", spec = Equal.class),
+        @Spec(path = "dtUpdated", spec = LessThanOrEqual.class)
     })
 	public interface AttendenceSpec extends Specification<AttendenceModel> {}
+    
+    
+    @And({
+        @Spec(path = "dtCreated", spec = GreaterThanOrEqual.class),
+        @Spec(path = "status", spec = Equal.class),
+        @Spec(path = "queueId", spec = Equal.class),
+        @Spec(path = "attendenceId", spec = Equal.class),
+        @Spec(path = "dtUpdated", spec = LessThanOrEqual.class)
+    })
+	public interface AttendenceHistSpec extends Specification<AttendenceHistModel> {}
+    
     
     @And({
         @Spec(path = "document", spec = Like.class),
@@ -93,6 +107,14 @@ public class SpecificationTemplate {
     }
     
     public static Specification<AttendenceModel> attendenceCompanyId(final UUID companyId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            return cb.and(cb.equal(company.get("companyId"), companyId));
+        };
+    }
+    
+    public static Specification<AttendenceHistModel> attendenceHistCompanyId(final UUID companyId) {
         return (root, query, cb) -> {
             query.distinct(true);
             Root<CompanyModel> company = query.from(CompanyModel.class);

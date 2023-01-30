@@ -19,7 +19,7 @@ public interface AttendenceRepository
 	
 	Optional<AttendenceModel> findByIdQueue(UUID idQueue);
 
-	List<AttendenceModel> findByClientClientIdOrderByAttendenceId(UUID idClient);
+	List<AttendenceModel> findByClientClientIdAndIdQueueNotOrderByAttendenceId(UUID idClient, UUID idQueue);
 
 	
 	@Query(value="select max(password) FROM attendence att WHERE att.company_id =:companyId and att.dt_created between :before and :after", 

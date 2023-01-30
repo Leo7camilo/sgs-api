@@ -21,10 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.sgs.dtos.AttendenceDto;
+import com.br.sgs.models.AttendenceHistModel;
 import com.br.sgs.models.AttendenceModel;
 import com.br.sgs.models.ClientModel;
 import com.br.sgs.models.CompanyModel;
 import com.br.sgs.models.TerminalModel;
+import com.br.sgs.services.AttendenceHistService;
 import com.br.sgs.services.AttendenceService;
 import com.br.sgs.specifications.SpecificationTemplate;
 import com.br.sgs.utils.BusinessValidation;
@@ -38,16 +40,14 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("${api.version}/attendence")
 public class AttendenceResources {
 	
-	
-	/**
-	 * Cria regra para chamada do client
-	 */
-	
 	@Autowired
 	BusinessValidation businessValidation;
 	
 	@Autowired
 	AttendenceService attendenceService;
+	
+	@Autowired
+	AttendenceHistService attendenceHistService;
 
 	@PostMapping("/{companyId}/client/{clientId}")
 	private ResponseEntity<Object> createAttendence(@PathVariable UUID companyId, @PathVariable UUID clientId,
@@ -132,6 +132,16 @@ public class AttendenceResources {
 		
 		businessValidation.validateCompany(companyId);
 		return ResponseEntity.status(HttpStatus.OK).body(attendenceService.getAllAttendence(SpecificationTemplate.attendenceCompanyId(companyId).and(spec), pageable));
+	}
+	
+	@GetMapping("/{companyId}/hist")
+	public ResponseEntity<Page<AttendenceHistModel>> getAllAttendenceHist(@PathVariable UUID companyId, SpecificationTemplate.AttendenceHistSpec spec,
+			@PageableDefault(page = 0, size = 10, sort = "attendenceHistId", direction = Sort.Direction.ASC) Pageable pageable) {
+		
+		log.info("GET getAllAttendence received {} ", companyId);
+		
+		businessValidation.validateCompany(companyId);
+		return ResponseEntity.status(HttpStatus.OK).body(attendenceHistService.getAllAttendence(SpecificationTemplate.attendenceHistCompanyId(companyId).and(spec), pageable));
 	}
 
 

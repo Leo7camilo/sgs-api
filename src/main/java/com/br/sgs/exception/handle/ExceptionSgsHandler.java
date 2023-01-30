@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.br.sgs.exception.CompanyNotFound;
 import com.br.sgs.exception.DocumentAlredyInUse;
 import com.br.sgs.exception.NameAlredyInUse;
 import com.br.sgs.exception.RoleNotFound;
@@ -61,14 +63,32 @@ public class ExceptionSgsHandler extends ResponseEntityExceptionHandler{
 	
 	@ExceptionHandler({DocumentAlredyInUse.class})
 	public ResponseEntity<Object> handlerDocumentAlredyInUse(Exception ex) {
-		String mensagemUsuario = messageSource.getMessage("documento-invalido", null, 
+		
+		
+		System.out.println(LocaleContextHolder.getLocale());
+		
+		String mensagemUsuario = messageSource.getMessage("documento_invalido", null, 
 				LocaleContextHolder.getLocale());
+		
+		
 		String mensagemDesenvolvedor = ex.toString();
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		
 		return ResponseEntity.badRequest().body(erros);
 	}
 	
+	
+	
+	@ExceptionHandler({CompanyNotFound.class})
+	public ResponseEntity<Object> handlerCompanyNotFoundException(Exception ex, WebRequest request) {
+		String mensagemUsuario = messageSource.getMessage("companhia.nao-encotrada", null, 
+				LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		
+		return handleExceptionInternal(ex, erros
+				, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+	}
 	
 	@ExceptionHandler({EmptyResultDataAccessException.class, NoSuchElementException.class})
 	public ResponseEntity<Object> handlerEmptyResultDataAccessException(Exception ex, WebRequest request) {
