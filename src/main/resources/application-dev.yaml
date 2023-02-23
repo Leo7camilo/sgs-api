@@ -2,6 +2,8 @@ sgs:
   auth:
     jwtSecret: t7w!z%C*F-JaNdRgUkXp2s5v8x/A?D(G+KbPeShVmYq3t6w9z$B&E)H@McQfTjWn
     jwtExpirationMs: 14400000
+  allowed-origin: http://localhost:4200
+  
 spring:
   jpa:    
     hibernate:
@@ -19,6 +21,7 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true  
+
 
 
 #server:

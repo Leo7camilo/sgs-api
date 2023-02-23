@@ -18,14 +18,19 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 import com.br.sgs.enums.AttendenceState;
+import com.br.sgs.enums.TerminalState;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "ATTENDENCE")
+@NoArgsConstructor
+@AllArgsConstructor
 public class AttendenceModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

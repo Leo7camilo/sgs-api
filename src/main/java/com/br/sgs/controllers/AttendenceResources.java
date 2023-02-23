@@ -98,7 +98,6 @@ public class AttendenceResources {
 		businessValidation.validateQueueAndCompany(companyId, queueId);
 
 		attendenceService.updateStatus(companyId, queueId, clientId);
-		
 		return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 	}
 	

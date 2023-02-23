@@ -13,8 +13,6 @@ import com.br.sgs.models.QueueModel;
 @Repository
 public interface QueueRepository extends JpaRepository<QueueModel, UUID>, JpaSpecificationExecutor<QueueModel> {
 
-	boolean existsByDescription(String description);
-
 	List<QueueModel> findAllByQueueIdInOrderByQueueId(List<UUID> idQueueList);
 
 	Optional<QueueModel> findByQueueIdAndCompanyCompanyId(UUID queueId, UUID companyId);
@@ -22,5 +20,9 @@ public interface QueueRepository extends JpaRepository<QueueModel, UUID>, JpaSpe
 	List<QueueModel> findAllByCompanyCompanyId(UUID companyId);
 
 	List<QueueModel> findAllByQueueIdInOrderByPriority(List<UUID> idQueueList);
+
+	boolean existsByDescriptionAndCompanyCompanyId(String description, UUID companyId);
+
+	boolean existsByPriorityAndCompanyCompanyId(Integer priority, UUID companyId);
 
 }

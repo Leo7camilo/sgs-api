@@ -11,5 +11,4 @@ public class JwtDto {
     @NonNull
     private String token;
     private String type = "Bearer";
-
 }

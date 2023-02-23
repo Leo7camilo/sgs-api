@@ -19,17 +19,21 @@ import org.hibernate.validator.constraints.br.CPF;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.br.sgs.enums.TerminalState;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "CLIENT")
+@NoArgsConstructor
+@AllArgsConstructor		
 public class ClientModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

@@ -51,8 +51,8 @@ public class QueueServiceImpl implements QueueService {
 	UserService userService;
 	
 	@Override
-	public boolean existsByDescription(String description) {
-		return queueRepository.existsByDescription(description);
+	public boolean existsByDescription(String description, UUID companyId) {
+		return queueRepository.existsByDescriptionAndCompanyCompanyId(description, companyId);
 	}
 
 	@Override
@@ -157,8 +157,14 @@ public class QueueServiceImpl implements QueueService {
 	@Override
 	public Page<QueueHistModel> findAllHistByQueueIn(Specification<QueueHistModel> spec, Pageable pageable) {
 		return queueHistRepository.findAll(spec, pageable);
-	}	
+	}
 
+	@Override
+	public boolean existsByPriority(Integer priority, UUID companyId) {
+		return queueRepository.existsByPriorityAndCompanyCompanyId(priority, companyId);
+	}	
+	
+	
 	
 	
 }

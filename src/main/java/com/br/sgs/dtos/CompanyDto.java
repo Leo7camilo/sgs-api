@@ -22,7 +22,7 @@ public class CompanyDto {
 	
     @NotBlank(groups = CompanyView.RegistrationPost.class)
     @Size(min = 3, max = 50, groups = CompanyView.RegistrationPost.class)
-    @UsernameConstraint(groups = CompanyView.RegistrationPost.class)
+    //@UsernameConstraint(groups = CompanyView.RegistrationPost.class)
     @JsonView(CompanyView.RegistrationPost.class)
     private String name;
      

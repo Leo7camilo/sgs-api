@@ -23,8 +23,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.br.sgs.exception.CompanyNotFound;
+import com.br.sgs.exception.DescriptionAlredyInUse;
 import com.br.sgs.exception.DocumentAlredyInUse;
 import com.br.sgs.exception.NameAlredyInUse;
+import com.br.sgs.exception.PriorityAlredyInUse;
 import com.br.sgs.exception.RoleNotFound;
 
 @ControllerAdvice
@@ -51,9 +53,10 @@ public class ExceptionSgsHandler extends ResponseEntityExceptionHandler{
 		return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
 	}
 	
-	@ExceptionHandler({NameAlredyInUse.class})
-	public ResponseEntity<Object> handlerNameAlredyInUse(Exception ex) {
-		String mensagemUsuario = messageSource.getMessage("nome-invalido", null, 
+	
+	@ExceptionHandler({DocumentAlredyInUse.class})
+	public ResponseEntity<Object> handlerDocumentAlredyInUse(Exception ex) {
+		String mensagemUsuario = messageSource.getMessage("documento_invalido", null, 
 				LocaleContextHolder.getLocale());
 		String mensagemDesenvolvedor = ex.toString();
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
@@ -61,16 +64,20 @@ public class ExceptionSgsHandler extends ResponseEntityExceptionHandler{
 		return ResponseEntity.badRequest().body(erros);
 	}
 	
-	@ExceptionHandler({DocumentAlredyInUse.class})
-	public ResponseEntity<Object> handlerDocumentAlredyInUse(Exception ex) {
-		
-		
-		System.out.println(LocaleContextHolder.getLocale());
-		
-		String mensagemUsuario = messageSource.getMessage("documento_invalido", null, 
+	@ExceptionHandler({NameAlredyInUse.class, DescriptionAlredyInUse.class})
+	public ResponseEntity<Object> handlerNameAlredyInUse(Exception ex) {
+		String mensagemUsuario = messageSource.getMessage("nome_invalido", null, 
 				LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		
-		
+		return ResponseEntity.badRequest().body(erros);
+	}
+	
+	@ExceptionHandler({PriorityAlredyInUse.class})
+	public ResponseEntity<Object> handlerPriorityAlredyInUse(Exception ex) {
+		String mensagemUsuario = messageSource.getMessage("prioridade_invalida", null, 
+				LocaleContextHolder.getLocale());
 		String mensagemDesenvolvedor = ex.toString();
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		

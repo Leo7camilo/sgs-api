@@ -28,6 +28,7 @@ import com.br.sgs.dtos.QueueDto;
 import com.br.sgs.exception.CompanyNotFound;
 import com.br.sgs.exception.DescriptionAlredyInUse;
 import com.br.sgs.exception.OperationNotAllowed;
+import com.br.sgs.exception.PriorityAlredyInUse;
 import com.br.sgs.exception.QueueNotFound;
 import com.br.sgs.models.QueueHistModel;
 import com.br.sgs.models.QueueModel;
@@ -57,15 +58,20 @@ public class QueueResources {
 														@JsonView(QueueDto.QueueView.RegistrationPost.class) QueueDto queueDto,
 														@PathVariable UUID companyId){
 		
+		if (!companyService.existsById(companyId)) {
+			log.warn("CompanyId {} not found ", companyId);
+			throw new CompanyNotFound();
+        }
+		
 		log.info("POST createQueue queueDto received {} ", queueDto.toString());
-        if(queueService.existsByDescription(queueDto.getDescription())){
+        if(queueService.existsByDescription(queueDto.getDescription(), companyId)){
             log.warn("Description {} is Already Taken ", queueDto.getDescription());
             throw new DescriptionAlredyInUse();
         }
         
-        if (!companyService.existsById(companyId)) {
-			log.warn("CompanyId {} not found ", companyId);
-			throw new CompanyNotFound();
+        if(queueService.existsByPriority(queueDto.getPriority(), companyId)){
+            log.warn("Priority {} is Already Taken ", queueDto.getDescription());
+            throw new PriorityAlredyInUse();
         }
         
         QueueModel queueModel = queueService.save(queueDto, companyId);

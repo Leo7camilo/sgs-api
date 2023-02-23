@@ -28,7 +28,12 @@ public class WebSecurityConfig {
     AuthenticationEntryPointImpl authenticationEntryPoint;
 
     private static final String[] AUTH_WHITELIST = {
-            "/v1/auth/**",  "/v1/company/**"
+            "/v1/auth/**",  "/v1/company/**" , 
+            "/v1/terminal/**", "/v1/profile/**", 
+            "/v1/queue/**", "/v1/client/**", 
+            "/v1/role/**", "/v1/attendence/**"
+            
+            
     };
 
     @Bean

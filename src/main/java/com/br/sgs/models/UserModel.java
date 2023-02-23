@@ -28,15 +28,18 @@ import com.br.sgs.enums.UserStatus;
 import com.br.sgs.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
 @Entity
 @Table(name = "USER")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
