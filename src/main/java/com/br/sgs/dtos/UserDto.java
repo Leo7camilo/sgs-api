@@ -1,11 +1,16 @@
 package com.br.sgs.dtos;
 
+import java.util.Set;
+import java.util.UUID;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.br.CPF;
 
+import com.br.sgs.enums.UserType;
 import com.br.sgs.validation.UsernameConstraint;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -46,6 +51,13 @@ public class UserDto {
     @Size(min = 6, max = 20, groups = {UserView.RegistrationPost.class, UserView.PasswordPut.class})
     @JsonView({UserView.RegistrationPost.class, UserView.PasswordPut.class})
 	private String password;
+	
+	@NotNull(groups = UserView.RegistrationPost.class)
+    @JsonView(UserView.RegistrationPost.class)
+    private UserType userType;
+	
+	@NotNull(groups = UserView.RegistrationPost.class)
+	@JsonView(UserView.RegistrationPost.class)
+	private Set<UUID> roleId;
 
-    
 }

@@ -52,7 +52,7 @@ public class ProfileServiceImpl implements ProfileService{
 		}
 		
 		ProfileModel profileModel = new ProfileModel();
-		BeanUtils.copyProperties(profileDto, profileModel);
+		profileModel.setDescription(profileDto.getDescription());
 		profileModel.setCompany(company.get());
 		profileModel.setDtChange(LocalDateTime.now(ZoneId.of("UTC")));
 		profileModel.setStatus(ProfileState.ACTIVE);

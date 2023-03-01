@@ -63,7 +63,7 @@ public class RoleModel implements GrantedAuthority, Serializable {
 	private LocalDateTime dtUpdate;
 	
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
 	private CompanyModel company;
 
 	@Override
