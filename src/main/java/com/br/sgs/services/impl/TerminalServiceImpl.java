@@ -89,6 +89,13 @@ public class TerminalServiceImpl implements TerminalService{
 	}
 	
 	@Override
+	public TerminalModel update(TerminalModel terminal, String name) {
+		terminal.setName(name);
+		terminal.setDtChange(LocalDateTime.now(ZoneId.of("UTC")));
+		return terminalRepository.save(terminal);
+	}
+	
+	@Override
 	public boolean existsByName(String name) {
 		return terminalRepository.existsByName(name);
 	}
@@ -107,6 +114,8 @@ public class TerminalServiceImpl implements TerminalService{
 	public Optional<TerminalModel> findByIdAndCompanyId(UUID idTerminal, UUID companyId) {
 		return terminalRepository.findByTerminalIdAndCompanyCompanyId(idTerminal, companyId);
 	}
+
+	
 
 	
 	

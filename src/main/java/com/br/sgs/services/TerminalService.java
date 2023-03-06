@@ -29,4 +29,6 @@ public interface TerminalService {
 
 	Optional<TerminalModel> findByIdAndCompanyId(UUID idTerminal, UUID companyId);
 
+	TerminalModel update(TerminalModel terminalModel, String name);
+
 }

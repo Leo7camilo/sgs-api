@@ -59,11 +59,41 @@ public class TerminalResources {
 		return new ResponseEntity<Object>(terminalModel, HttpStatus.CREATED);
 	}
 	
+	@PutMapping("/{companyId}/{terminalId}")
+	private ResponseEntity<Object> updateTerminal(@PathVariable(value="companyId") UUID companyId,
+												   @PathVariable(value="terminalId") UUID terminalId,
+												   @RequestBody @Validated(TerminalDto.TerminalView.TerminalPut.class) 
+														@JsonView(TerminalDto.TerminalView.TerminalPut.class) TerminalDto terminalDto){
+		
+		log.debug("PUT updateTerminal id received {} ", terminalId);
+		Optional<TerminalModel> terminalModel = terminalService.findById(terminalId);
+		
+        if(!terminalModel.isPresent()){
+            log.warn("terminalId {} not found ", terminalModel.get().getName());
+            throw new TerminalNotFound();
+        }
+		if (!companyService.existsById(companyId)) {
+			log.warn("CompanyId {} not found ", companyId);
+			throw new CompanyNotFound();
+		}
+		if (!companyId.equals(terminalModel.get().getCompany().getCompanyId())) {
+			log.warn("CompanyId is diferent");
+			throw new OperationNotAllowed();
+		}
+		
+        var terminalModelUpdated = terminalService.update(terminalModel.get(), terminalDto.getName());
+        
+        log.debug("POST updateTerminal terminalId saved {} ", terminalModelUpdated.getTerminalId());
+        log.info("Terminal saved successfully terminalId {} ", terminalModelUpdated.getTerminalId());
+        
+		return ResponseEntity.status(HttpStatus.OK).body(terminalModelUpdated);
+	}
+	
 	@PutMapping("/status/{companyId}/{terminalId}")
 	private ResponseEntity<Object> alternateStatus(@PathVariable(value="companyId") UUID companyId,
 												   @PathVariable(value="terminalId") UUID terminalId){
 		
-		log.debug("POST alternateStatus id received {} ", terminalId);
+		log.debug("PUT alternateStatus id received {} ", terminalId);
 		Optional<TerminalModel> terminalModel = terminalService.findById(terminalId);
 		
         if(!terminalModel.isPresent()){
@@ -81,7 +111,7 @@ public class TerminalResources {
 		
         var terminalModelUpdated = terminalService.updateStatus(terminalModel.get());
         
-        log.debug("POST alternateStatus terminalId saved {} ", terminalModelUpdated.getTerminalId());
+        log.debug("PUT alternateStatus terminalId saved {} ", terminalModelUpdated.getTerminalId());
         log.info("Terminal saved successfully terminalId {} ", terminalModelUpdated.getTerminalId());
         
 		return ResponseEntity.status(HttpStatus.OK).body(terminalModelUpdated);

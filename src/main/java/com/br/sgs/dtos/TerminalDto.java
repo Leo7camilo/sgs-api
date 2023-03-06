@@ -19,9 +19,9 @@ public class TerminalDto {
 	    public static interface TerminalStatusPut {}
 	}
 	
-	@NotBlank(groups = TerminalView.RegistrationPost.class)
+	@NotBlank(groups = {TerminalView.RegistrationPost.class, TerminalView.TerminalPut.class})
 	@Size(min = 4, max = 50, groups = {TerminalView.RegistrationPost.class, TerminalView.TerminalPut.class})
-	@JsonView(TerminalView.RegistrationPost.class)
+	@JsonView({TerminalView.RegistrationPost.class, TerminalView.TerminalPut.class})
 	private String name;
 	
 	@NotBlank(groups = TerminalView.TerminalStatusPut.class)
