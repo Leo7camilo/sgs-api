@@ -98,7 +98,7 @@ public class ExceptionSgsHandler extends ResponseEntityExceptionHandler{
 	
 	@ExceptionHandler({CompanyNotFound.class})
 	public ResponseEntity<Object> handlerCompanyNotFoundException(Exception ex, WebRequest request) {
-		String mensagemUsuario = messageSource.getMessage("companhia.nao-encotrada", null, 
+		String mensagemUsuario = messageSource.getMessage("companhia.nao_encotrada", null, 
 				LocaleContextHolder.getLocale());
 		String mensagemDesenvolvedor = ex.toString();
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
@@ -109,7 +109,7 @@ public class ExceptionSgsHandler extends ResponseEntityExceptionHandler{
 	
 	@ExceptionHandler({EmptyResultDataAccessException.class, NoSuchElementException.class})
 	public ResponseEntity<Object> handlerEmptyResultDataAccessException(Exception ex, WebRequest request) {
-		String mensagemUsuario = messageSource.getMessage("recurso.nao-encontrado", null, 
+		String mensagemUsuario = messageSource.getMessage("recurso.nao_encontrado", null, 
 				LocaleContextHolder.getLocale());
 		String mensagemDesenvolvedor = ex.toString();
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));

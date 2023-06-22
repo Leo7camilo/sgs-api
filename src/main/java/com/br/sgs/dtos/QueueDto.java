@@ -34,7 +34,7 @@ public class QueueDto {
 	private QueueState status;
 	
 	@NotNull(groups = QueueView.RegistrationPost.class)
-	@JsonView(QueueView.RegistrationPost.class)
+	@JsonView({QueueView.RegistrationPost.class, QueueView.QueuePut.class})
 	private Set<UUID> idRoles;
 	
 	@NotNull(groups = {QueueView.RegistrationPost.class, QueueView.QueuePut.class})

@@ -50,8 +50,7 @@ public class CompanyResources {
 		if(companyService.existsByDocument(companyDto.getDocument())){
             log.warn("Document {} is Already Taken ", companyDto.getDocument());
             throw new DocumentAlredyInUse();
-        }
-		
+        }		
 		return new ResponseEntity<Object>(companyService.save(companyDto), HttpStatus.CREATED);
 	}
 	

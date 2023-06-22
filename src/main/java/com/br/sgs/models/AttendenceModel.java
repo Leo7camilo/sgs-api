@@ -18,7 +18,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 import com.br.sgs.enums.AttendenceState;
-import com.br.sgs.enums.TerminalState;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 
@@ -42,8 +41,12 @@ public class AttendenceModel implements Serializable {
 	
 	private Integer password;
 	
-	@Type(type="uuid-char")
-	private UUID idQueue;
+	////@Type(type="uuid-char")
+	//private UUID queueId;
+	
+	@ManyToOne
+	@JoinColumn(name = "queueId")
+	private QueueModel queue;
 	
 	@ManyToOne
 	@JoinColumn(name = "clientId")

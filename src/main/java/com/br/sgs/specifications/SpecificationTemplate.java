@@ -47,11 +47,9 @@ public class SpecificationTemplate {
     @And({
         @Spec(path = "dtCreated", spec = GreaterThanOrEqual.class),
         @Spec(path = "status", spec = Equal.class),
-        @Spec(path = "queueId", spec = Equal.class),
         @Spec(path = "dtUpdated", spec = LessThanOrEqual.class)
     })
 	public interface AttendenceSpec extends Specification<AttendenceModel> {}
-    
     
     @And({
         @Spec(path = "dtCreated", spec = GreaterThanOrEqual.class),
@@ -113,6 +111,48 @@ public class SpecificationTemplate {
             return cb.and(cb.equal(company.get("companyId"), companyId));
         };
     }
+    
+    public static Specification<AttendenceModel> attendenceCompanyId(final UUID companyId, final String queueId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            Root<QueueModel> queue = query.from(QueueModel.class);
+            //;
+            
+            return cb.and(cb.equal(company.get("companyId"), companyId), cb.equal(queue.get("queueId"), queueId));
+        };
+    }
+    
+    public static Specification<AttendenceModel> attendenceCompanyIdQueueId(final UUID companyId, final UUID queueId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<AttendenceModel> attendence = root;
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            return cb.and(cb.equal(company.get("companyId"), companyId), cb.equal(attendence.get("queue").get("queueId"), queueId));
+        };
+    }
+    
+    
+    /*
+     * public static Specification<QueueHistModel> queueHistCompanyId(final UUID companyId, final UUID queueId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<QueueHistModel> queueHistModel = root;
+            Root<QueueModel> queue = query.from(QueueModel.class);            
+            return cb.and(cb.equal(queue.get("company").get("companyId"), companyId), cb.equal(queueHistModel.get("queue").get("queueId"), queueId));
+        };
+    }
+     * 
+     * 
+    public static Specification<LessonModel> lessonModuleId(final UUID moduleId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<LessonModel> lesson = root;
+            Root<ModuleModel> module = query.from(ModuleModel.class);
+            Expression<Collection<LessonModel>> moduleLessons = module.get("lessons");
+            return cb.and(cb.equal(module.get("moduleId"), moduleId), cb.isMember(lesson, moduleLessons));
+        };
+    }*/
     
     public static Specification<AttendenceHistModel> attendenceHistCompanyId(final UUID companyId) {
         return (root, query, cb) -> {

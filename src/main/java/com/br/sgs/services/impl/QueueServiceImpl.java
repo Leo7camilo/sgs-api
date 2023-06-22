@@ -2,8 +2,10 @@ package com.br.sgs.services.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -21,15 +23,14 @@ import com.br.sgs.enums.QueueState;
 import com.br.sgs.models.CompanyModel;
 import com.br.sgs.models.QueueHistModel;
 import com.br.sgs.models.QueueModel;
-import com.br.sgs.models.RoleQueueModel;
+import com.br.sgs.models.RoleModel;
 import com.br.sgs.models.UserModel;
 import com.br.sgs.repository.QueueHistRepository;
 import com.br.sgs.repository.QueueRepository;
-import com.br.sgs.repository.RoleQueueRepository;
 import com.br.sgs.services.CompanyService;
 import com.br.sgs.services.QueueService;
+import com.br.sgs.services.RoleService;
 import com.br.sgs.services.UserService;
-import com.br.sgs.specifications.SpecificationTemplate.QueueHistSpec;
 
 
 @Service
@@ -42,13 +43,13 @@ public class QueueServiceImpl implements QueueService {
 	QueueRepository queueRepository;
 	
 	@Autowired
-	RoleQueueRepository roleQueueRepository;
-	
-	@Autowired
 	QueueHistRepository queueHistRepository;
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	RoleService roleService;
 	
 	@Override
 	public boolean existsByDescription(String description, UUID companyId) {
@@ -58,7 +59,7 @@ public class QueueServiceImpl implements QueueService {
 	@Override
 	@Transactional
 	public QueueModel save(QueueDto queueDto, UUID idCompany) {
-		
+		Set<RoleModel> roles = new HashSet<>();
 		Optional<CompanyModel> company = companyService.findById(idCompany);
 		
 		var queueModel = new QueueModel();
@@ -66,16 +67,14 @@ public class QueueServiceImpl implements QueueService {
 		queueModel.setStatus(QueueState.ACTIVE);
 		queueModel.setCompany(company.get());
 		
-		queueModel = queueRepository.save(queueModel);
-		
 		for(UUID idRole: queueDto.getIdRoles()) {
-			var roleQueueModel = new RoleQueueModel();
-			roleQueueModel.setIdQueue(queueModel.getQueueId());
-			roleQueueModel.setIdRole(idRole);
-			
-			roleQueueRepository.save(roleQueueModel);
+			Optional<RoleModel> role = roleService.findByIdAndCompanyId(idRole, idCompany);
+			if(role.isPresent()) {
+				roles.add(role.get());
+			}
 		}
-		
+		queueModel.setRoles(roles);
+		queueModel = queueRepository.save(queueModel);
 		return queueModel;
 	}
 
@@ -120,19 +119,29 @@ public class QueueServiceImpl implements QueueService {
 	@Transactional
 	public QueueModel update(QueueDto queueDto, UUID idCompany, UUID idQueue) {
 		
-		Optional<CompanyModel> company = companyService.findById(idCompany);
+		Set<RoleModel> roles = new HashSet<>();
+		Optional<QueueModel> queueModel = findByIdAndCompanyId(idQueue, idCompany);
 		
-		var queueModel = new QueueModel();
 		BeanUtils.copyProperties(queueDto, queueModel);
-		queueModel.setCompany(company.get());
-		queueModel.setQueueId(idQueue);
-		return queueRepository.save(queueModel);
+		queueModel.get().setRoles(null);
+		QueueModel queueAlternate = queueRepository.save(queueModel.get());
+		
+		for(UUID idRole: queueDto.getIdRoles()) {
+			Optional<RoleModel> role = roleService.findByIdAndCompanyId(idRole, idCompany);
+			if(role.isPresent()) {
+				roles.add(role.get());
+			}
+		}
+		
+		queueAlternate.setRoles(roles);
+		return queueRepository.save(queueAlternate);
 	}
 
 	@Override
 	public List<QueueModel> orderListQueueByPriority(List<UUID> idQueueList) {
 		return queueRepository.findAllByQueueIdInOrderByPriority(idQueueList);
 	}
+
 
 	@Override
 	public Optional<QueueModel> findByIdAndCompanyId(UUID queueId, UUID companyId) {
@@ -162,6 +171,11 @@ public class QueueServiceImpl implements QueueService {
 	@Override
 	public boolean existsByPriority(Integer priority, UUID companyId) {
 		return queueRepository.existsByPriorityAndCompanyCompanyId(priority, companyId);
+	}
+
+	@Override
+	public Optional<QueueModel> findByCompanyIdAndDescription(UUID companyId, String description) {
+		return queueRepository.findByCompanyCompanyIdAndDescription(companyId, description);
 	}	
 	
 	

@@ -32,9 +32,7 @@ public class WebSecurityConfig {
             "/v1/terminal/**", "/v1/profile/**", 
             "/v1/queue/**", "/v1/client/**", 
             "/v1/role/**", "/v1/attendence/**", 
-            "/v1/permission/**"
-            
-            
+            "/v1/permission/**",  "/v1/analytics/**"       
     };
 
     @Bean

@@ -24,8 +24,6 @@ public interface AttendenceService {
 
 	Optional<AttendenceModel> findByIdQueue(UUID idQueue);
 
-	void updateStatus(UUID idCompany, UUID idQueue, UUID idClient);
-
 	Integer getNextPassword(UUID companyId);
 
 	Page<AttendenceModel>  getAllAttendence(Specification<AttendenceModel> spec, Pageable pageable);
@@ -35,4 +33,17 @@ public interface AttendenceService {
 	Optional<AttendenceModel> findByIdAndCompanyId(UUID attendenceId, UUID companyId);
 
 	void updateStatus(UUID companyId, TerminalModel terminal, AttendenceModel attendence);
+
+	void updateStatus(UUID companyId, UUID queueId, UUID clientId, UUID attendenceId);
+
+	void updateStatus(UUID companyId, UUID queueId, UUID attendenceId);
+
+	Object countAttendenceByCompany(UUID companyId);
+
+	Object countAttendenceByCompanyAndDate(UUID companyId);
+	
+	Object findMostFrequentAttendenceQueue(UUID companyId);
+
+	Object groupAttendenceByCompanyAndDate(UUID companyId);
+	
 }

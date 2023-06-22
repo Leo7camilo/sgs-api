@@ -54,7 +54,7 @@ public class AttendenceResources {
 													@RequestBody @Validated (AttendenceDto.AttendenceView.RegistrationPost.class)
 													@JsonView(AttendenceDto.AttendenceView.RegistrationPost.class) AttendenceDto attendenceDto) {
 
-		log.info("POST createAttendence received {} ", attendenceDto.toString());
+		log.info("POST createAttendence received: {} ", attendenceDto.toString());
 	
 		ClientModel client = businessValidation.validateClientOptional(clientId);	
 		CompanyModel company = businessValidation.validateCompanyOptional(companyId);
@@ -69,7 +69,7 @@ public class AttendenceResources {
 												@RequestBody @Validated (AttendenceDto.AttendenceView.Calls.class)
 												@JsonView(AttendenceDto.AttendenceView.Calls.class) AttendenceDto attendenceDto) {
 
-		log.info("PUT callsClient received {} ", attendenceDto.toString());
+		log.info("PUT callsClient received: {} ", attendenceDto.toString());
 		TerminalModel terminal = businessValidation.validateTerminalOptional(companyId, terminalId);
 		businessValidation.validateQueueAndCompany(companyId, queueId);
 		attendenceService.updateStatus(attendenceDto, companyId, queueId, terminal);
@@ -91,13 +91,20 @@ public class AttendenceResources {
 	}
 
 	
-	@DeleteMapping("/{companyId}/calls/{queueId}/{clientId}")
-	private ResponseEntity<Object> deleteClient(@PathVariable UUID companyId, @PathVariable UUID queueId, @PathVariable UUID clientId) {
-
-		log.info("DELETE deleteClient received {} | {} | {}", companyId, queueId, clientId);
+	@DeleteMapping(value = {"/{companyId}/calls/{attendenceId}/{queueId}",
+							"/{companyId}/calls/{attendenceId}/{queueId}/{clientId}"})
+	private ResponseEntity<Object> deleteClient(@PathVariable UUID companyId, @PathVariable UUID attendenceId, 
+												@PathVariable UUID queueId, @PathVariable(required = false) UUID clientId) {
+		
 		businessValidation.validateQueueAndCompany(companyId, queueId);
-
-		attendenceService.updateStatus(companyId, queueId, clientId);
+		if(clientId == null) {
+			attendenceService.updateStatus(companyId, queueId, attendenceId);
+			log.info("DELETE deleteClient received {} | {} | {}", companyId, queueId, attendenceId);
+		}else {
+			attendenceService.updateStatus(companyId, queueId, clientId, attendenceId);
+			log.info("DELETE deleteClient received {} | {} | {} | {}", companyId, queueId, clientId, attendenceId);
+		}
+		
 		return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 	}
 	
@@ -113,35 +120,58 @@ public class AttendenceResources {
 		Integer maxPassword = attendenceService.getNextPassword(companyId);
 		
 		if(maxPassword != null) {
-			attendenceDto.setPassaword(maxPassword+1);
+			attendenceDto.setPassword(maxPassword+1);
 		}else {
-			attendenceDto.setPassaword(1);
+			attendenceDto.setPassword(1);
 		}
 		
 		attendenceService.save(attendenceDto, company);
 		return ResponseEntity.status(HttpStatus.OK).body(attendenceDto);
 	}	
 	
-	
 	@GetMapping("/{companyId}")
-	public ResponseEntity<Page<AttendenceModel>> getAllAttendence(@PathVariable UUID companyId, SpecificationTemplate.AttendenceSpec spec,
-			@PageableDefault(page = 0, size = 10, sort = "attendenceId", direction = Sort.Direction.ASC) Pageable pageable) {
-		
+	public ResponseEntity<Page<AttendenceModel>> getAllAttendence(@PathVariable UUID companyId,
+																  SpecificationTemplate.AttendenceSpec spec,
+																  @PageableDefault(page = 0, size = 10, sort = "attendenceId", direction = Sort.Direction.ASC) Pageable pageable) {
 		log.info("GET getAllAttendence received {} ", companyId);
 		
 		businessValidation.validateCompany(companyId);
 		return ResponseEntity.status(HttpStatus.OK).body(attendenceService.getAllAttendence(SpecificationTemplate.attendenceCompanyId(companyId).and(spec), pageable));
 	}
 	
+	@GetMapping("/{companyId}/by-queue/{queueId}")
+	public ResponseEntity<Page<AttendenceModel>> getAllAttendenceByQueueId(@PathVariable UUID companyId, @PathVariable UUID queueId,
+																  SpecificationTemplate.AttendenceSpec spec,
+																  @PageableDefault(page = 0, size = 10, sort = "attendenceId", direction = Sort.Direction.ASC) Pageable pageable) {
+		log.info("GET getAllAttendence received {} | {}", companyId, queueId);
+		
+		businessValidation.validateCompany(companyId);
+		return ResponseEntity.status(HttpStatus.OK).body(attendenceService.getAllAttendence(SpecificationTemplate.attendenceCompanyIdQueueId(companyId, queueId).and(spec), pageable));
+	}
+	
+	@GetMapping("/count-by-company/{companyId}")
+	public ResponseEntity<Object> analiticsCountAttendenceByCompany(@PathVariable UUID companyId) {
+		log.info("GET analiticsCountAttendenceByCompanie received {} | {}", companyId);
+		
+		businessValidation.validateCompany(companyId);
+		return ResponseEntity.status(HttpStatus.OK).body(attendenceService.countAttendenceByCompany(companyId));
+	}
+	
+	@GetMapping("/count-by-company-and-date/{companyId}")
+	public ResponseEntity<Object> analiticsCountAttendenceByCompanyAndDate(@PathVariable UUID companyId) {
+		log.info("GET analiticsCountAttendenceByCompanie received {} | {}", companyId);
+		
+		businessValidation.validateCompany(companyId);
+		return ResponseEntity.status(HttpStatus.OK).body(attendenceService.countAttendenceByCompanyAndDate(companyId));
+	}
+	
 	@GetMapping("/{companyId}/hist")
 	public ResponseEntity<Page<AttendenceHistModel>> getAllAttendenceHist(@PathVariable UUID companyId, SpecificationTemplate.AttendenceHistSpec spec,
 			@PageableDefault(page = 0, size = 10, sort = "attendenceHistId", direction = Sort.Direction.ASC) Pageable pageable) {
-		
 		log.info("GET getAllAttendence received {} ", companyId);
 		
 		businessValidation.validateCompany(companyId);
 		return ResponseEntity.status(HttpStatus.OK).body(attendenceHistService.getAllAttendence(SpecificationTemplate.attendenceHistCompanyId(companyId).and(spec), pageable));
 	}
-
 
 }

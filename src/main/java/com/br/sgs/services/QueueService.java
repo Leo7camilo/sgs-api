@@ -44,4 +44,6 @@ public interface QueueService {
 	Page<QueueHistModel> findAllHistByQueueIn(Specification<QueueHistModel> spec, Pageable pageable);
 
 	boolean existsByPriority(Integer priority, UUID companyId);
+
+	Optional<QueueModel> findByCompanyIdAndDescription(UUID companyId, String description);
 }

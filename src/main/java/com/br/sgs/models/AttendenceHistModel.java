@@ -73,4 +73,6 @@ public class AttendenceHistModel implements Serializable {
 	@JoinColumn(name = "terminalId")
 	private TerminalModel terminal;
 	
+	
+	
 }

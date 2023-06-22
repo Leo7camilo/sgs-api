@@ -26,11 +26,14 @@ public class AttendenceDto {
 	
 	@NotNull(groups = AttendenceView.RegistrationPost.class)
 	@JsonView(AttendenceView.RegistrationPost.class)
-	private Integer passaword;
+	private Integer password;
+	
+	@JsonView(AttendenceView.Calls.class)
+	private UUID idUser;
 	
 	@NotNull(groups = AttendenceView.Calls.class)
 	@JsonView(AttendenceView.Calls.class)
-	private UUID idUser;
+	private UUID attendenceId;
 	
 	
 	//POSTO DE TRABALHO

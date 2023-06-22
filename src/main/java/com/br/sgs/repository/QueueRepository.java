@@ -6,11 +6,9 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
 
 import com.br.sgs.models.QueueModel;
 
-@Repository
 public interface QueueRepository extends JpaRepository<QueueModel, UUID>, JpaSpecificationExecutor<QueueModel> {
 
 	List<QueueModel> findAllByQueueIdInOrderByQueueId(List<UUID> idQueueList);
@@ -24,5 +22,7 @@ public interface QueueRepository extends JpaRepository<QueueModel, UUID>, JpaSpe
 	boolean existsByDescriptionAndCompanyCompanyId(String description, UUID companyId);
 
 	boolean existsByPriorityAndCompanyCompanyId(Integer priority, UUID companyId);
+
+	Optional<QueueModel> findByCompanyCompanyIdAndDescription(UUID companyId, String description);
 
 }
