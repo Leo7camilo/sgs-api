@@ -32,6 +32,7 @@ import com.br.sgs.models.TerminalModel;
 import com.br.sgs.repository.AttendenceRepository;
 import com.br.sgs.services.AttendenceHistService;
 import com.br.sgs.services.AttendenceService;
+import com.br.sgs.services.ClientService;
 import com.br.sgs.services.QueueService;
 import com.br.sgs.specifications.SpecificationTemplate.AttendenceSpec;
 
@@ -46,6 +47,9 @@ public class AttendenceServiceImpl implements AttendenceService {
 
 	@Autowired
 	QueueService queueService;
+	
+	@Autowired
+	ClientService clientService;
 
 	@Override
 	public Page<AttendenceModel> getAllAttendence(AttendenceSpec spec, Pageable pageable) {
@@ -103,7 +107,7 @@ public class AttendenceServiceImpl implements AttendenceService {
 	@Transactional
 	public void updateStatus(UUID idCompany, UUID idQueue, UUID idClient, UUID attendenceId) {
 		//Optional<AttendenceModel> attendenceModel = findByIdQueue(idQueue);
-		Optional<AttendenceModel> attendenceModel = updateStatusToAttended(attendenceId);
+		Optional<AttendenceModel> attendenceModel = updateStatusToAttended(attendenceId, idClient);
 		
 		List<AttendenceModel> attendenceModelList = attendenceRepository
 				.findByClientClientIdAndQueueQueueIdNotOrderByAttendenceId(idClient, idQueue);
@@ -112,6 +116,24 @@ public class AttendenceServiceImpl implements AttendenceService {
 			saveHistory(attendenceRepository.save(attendenceModelList.get(0)));
 		}
 		attendenceRepository.deleteById(attendenceModel.get().getAttendenceId());
+	}
+
+	private Optional<AttendenceModel> updateStatusToAttended(UUID attendenceId, UUID idClient) {
+		
+		Optional<AttendenceModel> attendenceModel = findByAttendenceId(attendenceId);
+		if (!attendenceModel.isPresent()) {
+			throw new NoSuchElementException();
+		}
+		
+		Optional<ClientModel> client = clientService.findById(idClient);
+		if(client.isPresent()) {
+			attendenceModel.get().setClient(client.get());
+		}
+		
+		attendenceModel.get().setDtUpdated(LocalDateTime.now(ZoneId.of("UTC")));
+		attendenceModel.get().setStatus(AttendenceState.ATTENDED);
+		saveHistory(attendenceRepository.save(attendenceModel.get()));
+		return attendenceModel;
 	}
 
 	private Optional<AttendenceModel> updateStatusToAttended(UUID attendenceId) {
@@ -252,6 +274,8 @@ public class AttendenceServiceImpl implements AttendenceService {
 	public List<AttendenceGroupDateDto> groupAttendenceByCompanyAndDate(UUID companyId) {
 		List<AttendenceGroupDateDto> listAttendenceGroupDateDto = new ArrayList<>();
 		
+		List<QueueModel> queues = queueService.findByCompanyId(companyId);
+		List<AttendenceGroupDateDto> attendenceGroupDateDtoList = heapAttendenceGroup(queues, LocalDate.now(ZoneId.of("UTC")));
 		List<Object[]> listObj = attendenceRepository.groupAttendenceByCompanyAndDate(companyId.toString(), LocalDate.now(ZoneId.of("UTC")));
 		if(listObj != null && !listObj.isEmpty()){
 			listObj.forEach(attendenceGroupDateDtoResult -> {
@@ -264,6 +288,36 @@ public class AttendenceServiceImpl implements AttendenceService {
 				listAttendenceGroupDateDto.add(attendenceGroupDateDto);
 			});
 		}
+		List<AttendenceGroupDateDto> attendenceGroupDateDtoListResult = new ArrayList<>();
+		boolean insert = false;
+		for(AttendenceGroupDateDto attendence :attendenceGroupDateDtoList) {
+			for(AttendenceGroupDateDto attendenceData :listAttendenceGroupDateDto) {
+				if(attendence.getDescription().equals(attendenceData.getDescription()) && attendence.getHour().equals(attendenceData.getHour())) {
+					attendenceGroupDateDtoListResult.add(attendenceData);
+					insert = true;
+				}
+			}
+			if(!insert) {
+				attendenceGroupDateDtoListResult.add(attendence);
+			}
+			insert = false;
+		}
+		
+		return attendenceGroupDateDtoListResult;
+	}
+
+	private List<AttendenceGroupDateDto> heapAttendenceGroup(List<QueueModel> queues, LocalDate now) {
+		List<AttendenceGroupDateDto> listAttendenceGroupDateDto = new ArrayList<>();
+		
+		queues.forEach(queue -> {
+			for(int i = 6; i <= LocalDateTime.MAX.getHour() - 4; i++) {
+				AttendenceGroupDateDto attendenceGroupDateDto = new AttendenceGroupDateDto();
+				attendenceGroupDateDto.setDescription(queue.getDescription());
+				attendenceGroupDateDto.setCount(BigInteger.ZERO);
+				attendenceGroupDateDto.setHour(now.atStartOfDay().plusHours(i));	
+				listAttendenceGroupDateDto.add(attendenceGroupDateDto);			
+			}
+		});		
 		return listAttendenceGroupDateDto;
 	}	
 	

@@ -91,20 +91,25 @@ public class AttendenceResources {
 	}
 
 	
-	@DeleteMapping(value = {"/{companyId}/calls/{attendenceId}/{queueId}",
-							"/{companyId}/calls/{attendenceId}/{queueId}/{clientId}"})
+	@DeleteMapping(value = {"/{companyId}/calls/{attendenceId}/{queueId}"})
 	private ResponseEntity<Object> deleteClient(@PathVariable UUID companyId, @PathVariable UUID attendenceId, 
-												@PathVariable UUID queueId, @PathVariable(required = false) UUID clientId) {
+												@PathVariable UUID queueId) {
 		
+		log.info("DELETE deleteClient received {} | {} | {}", companyId, attendenceId, queueId);
 		businessValidation.validateQueueAndCompany(companyId, queueId);
-		if(clientId == null) {
-			attendenceService.updateStatus(companyId, queueId, attendenceId);
-			log.info("DELETE deleteClient received {} | {} | {}", companyId, queueId, attendenceId);
-		}else {
-			attendenceService.updateStatus(companyId, queueId, clientId, attendenceId);
-			log.info("DELETE deleteClient received {} | {} | {} | {}", companyId, queueId, clientId, attendenceId);
-		}
+		attendenceService.updateStatus(companyId, queueId, attendenceId);
 		
+		return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+	}
+	
+	@DeleteMapping("/{companyId}/calls/{attendenceId}/{queueId}/by-client/{clientId}")
+	private ResponseEntity<Object> deleteClientWithClientId(@PathVariable UUID companyId, @PathVariable UUID attendenceId, 
+							@PathVariable UUID queueId, @PathVariable UUID clientId) {
+		
+		log.info("DELETE deleteClientWithClientId received {} | {} | {} | {}", companyId, attendenceId, queueId, clientId);
+		businessValidation.validateQueueAndCompany(companyId, queueId);
+		attendenceService.updateStatus(companyId, queueId, clientId, attendenceId);
+
 		return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 	}
 	
@@ -168,10 +173,32 @@ public class AttendenceResources {
 	@GetMapping("/{companyId}/hist")
 	public ResponseEntity<Page<AttendenceHistModel>> getAllAttendenceHist(@PathVariable UUID companyId, SpecificationTemplate.AttendenceHistSpec spec,
 			@PageableDefault(page = 0, size = 10, sort = "attendenceHistId", direction = Sort.Direction.ASC) Pageable pageable) {
-		log.info("GET getAllAttendence received {} ", companyId);
+		log.info("GET getAllAttendenceHist received {} ", companyId);
+		
+		System.out.println(spec.toString());
 		
 		businessValidation.validateCompany(companyId);
 		return ResponseEntity.status(HttpStatus.OK).body(attendenceHistService.getAllAttendence(SpecificationTemplate.attendenceHistCompanyId(companyId).and(spec), pageable));
+	}
+	
+	/*@GetMapping("/{companyId}/hist/by-document-client/{document}")
+	public ResponseEntity<Page<AttendenceHistModel>> getAllAttendenceHistByDocumentClient(@PathVariable UUID companyId, @PathVariable String document
+																				    ,SpecificationTemplate.AttendenceHistSpec spec,
+			@PageableDefault(page = 0, size = 10, sort = "attendenceHistId", direction = Sort.Direction.ASC) Pageable pageable) {
+		log.info("GET getAllAttendenceHistByDocumentClient received {} - {}", companyId, document);
+		
+		
+		businessValidation.validateCompany(companyId);
+		return ResponseEntity.status(HttpStatus.OK).body(
+				attendenceHistService.getAllAttendence(SpecificationTemplate.attendenceHistCompanyIdAndDocumentClient(companyId, document).and(spec), pageable));
+	}*/
+	
+	@GetMapping("/{companyId}/hist/by-document-client/{document}")
+	public ResponseEntity<Object> getAllAttendenceHistByDocumentClient(@PathVariable UUID companyId, @PathVariable String document){
+		log.info("GET getAllAttendenceHistByDocumentClient received {} - {}", companyId, document);		
+		businessValidation.validateCompany(companyId);
+
+		return ResponseEntity.status(HttpStatus.OK).body(attendenceHistService.getAllAttendenceHistByDocumentClient(companyId, document));
 	}
 
 }

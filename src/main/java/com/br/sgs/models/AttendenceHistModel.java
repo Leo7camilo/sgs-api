@@ -45,8 +45,9 @@ public class AttendenceHistModel implements Serializable {
 	
 	private Integer password;
 	
-	@Type(type="uuid-char")
-	private UUID idQueue;
+	@ManyToOne
+	@JoinColumn(name = "queueId")
+	private QueueModel queue;
 	
 	@ManyToOne
 	@JoinColumn(name = "clientId")

@@ -1,5 +1,6 @@
 package com.br.sgs.dtos;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import lombok.Data;
@@ -9,6 +10,6 @@ public class ResponseCompanyClientDto {
 	
 	private List<CompanyClientDto> companyClientDto;
 	
-	private Long totalAttendence;
+	private BigInteger totalAttendence;
 	
 }

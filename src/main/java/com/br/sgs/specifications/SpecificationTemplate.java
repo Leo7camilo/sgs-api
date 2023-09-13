@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.persistence.criteria.Root;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.br.sgs.models.AttendenceHistModel;
@@ -52,7 +53,7 @@ public class SpecificationTemplate {
 	public interface AttendenceSpec extends Specification<AttendenceModel> {}
     
     @And({
-        @Spec(path = "dtCreated", spec = GreaterThanOrEqual.class),
+        @Spec(path = "dtCreated", spec = GreaterThanOrEqual.class, config = "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         @Spec(path = "status", spec = Equal.class),
         @Spec(path = "queueId", spec = Equal.class),
         @Spec(path = "attendenceId", spec = Equal.class),
@@ -212,6 +213,16 @@ public class SpecificationTemplate {
             return cb.and(cb.equal(company.get("companyId"), companyId));
         };
     }
+
+	public static Specification<AttendenceHistModel> attendenceHistCompanyIdAndDocumentClient(UUID companyId, String document) {
+		return (root, query, cb) -> {
+            query.distinct(true);
+            Root<AttendenceHistModel> attendence = root;
+            Root<CompanyModel> company = query.from(CompanyModel.class);
+            return cb.and(cb.equal(company.get("companyId"), companyId),
+            		cb.equal(attendence.get("client").get("document"), document));
+        };
+	}
     
     /*
     @And({

@@ -11,4 +11,6 @@ public class CompanyClientDto {
 	
 	private BigInteger count;
 	
+	private String description;
+	
 }

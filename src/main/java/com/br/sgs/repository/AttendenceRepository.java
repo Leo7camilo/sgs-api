@@ -55,8 +55,8 @@ public interface AttendenceRepository
 	List<String> findMostFrequentAttendenceQueue(@Param("companyId")String companyId);
 	
 	@Query(value = 
-			" SELECT q.description, COUNT(*) AS count, DATE_FORMAT(dt_created, '%Y-%m-%d %H:00:00') AS hour \r\n"
-			+ "FROM attendence att \r\n"
+			" SELECT q.description, COUNT(distinct att.attendence_id) AS count, DATE_FORMAT(dt_created, '%Y-%m-%d %H:00:00') AS hour \r\n"
+			+ "FROM attendence_hist att \r\n"
 			+ "join queue q on att.queue_id = q.queue_Id \r\n"
 			+ "WHERE att.company_id = :companyId \r\n"
 			+ "and DATE(att.dt_created) = :hour \r\n"
