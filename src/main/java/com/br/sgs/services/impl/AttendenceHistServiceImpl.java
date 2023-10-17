@@ -1,5 +1,6 @@
 package com.br.sgs.services.impl;
 
+import java.io.Console;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ import com.br.sgs.dtos.ClientHistDto;
 import com.br.sgs.dtos.CompanyClientDto;
 import com.br.sgs.dtos.ResponseClientHistDto;
 import com.br.sgs.dtos.ResponseCompanyClientDto;
+import com.br.sgs.enums.AttendenceState;
 import com.br.sgs.models.AttendenceHistModel;
 import com.br.sgs.models.AttendenceModel;
 import com.br.sgs.repository.AttendenceHistRepository;
@@ -47,7 +49,12 @@ public class AttendenceHistServiceImpl implements AttendenceHistService {
 	@Override
 	public Long countByCompanyCompanyIdAndDtCreatedBetween(UUID companyId, LocalDateTime atStartOfDay,
 			LocalDateTime atStartOfDay2) {
-		return attendenceHistRepository.countByCompanyCompanyIdAndDtCreatedBetween(companyId, atStartOfDay, atStartOfDay2);
+		
+		System.out.println(atStartOfDay);
+		System.out.println(atStartOfDay2);
+		return attendenceHistRepository.countByCompanyCompanyIdAndDtCreatedBetween(companyId.toString(), atStartOfDay, atStartOfDay2);
+		
+		//return attendenceHistRepository.countByCompanyCompanyIdAndDtCreatedBetween(companyId, atStartOfDay, atStartOfDay2);
 	}
 	
 	

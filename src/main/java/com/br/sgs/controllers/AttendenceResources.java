@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.br.sgs.dtos.AttendenceDto;
 import com.br.sgs.models.AttendenceHistModel;
 import com.br.sgs.models.AttendenceModel;
+import com.br.sgs.models.ClientEngagementLogModel;
 import com.br.sgs.models.ClientModel;
 import com.br.sgs.models.CompanyModel;
 import com.br.sgs.models.TerminalModel;
 import com.br.sgs.services.AttendenceHistService;
 import com.br.sgs.services.AttendenceService;
+import com.br.sgs.services.ClientEngagementLogService;
 import com.br.sgs.specifications.SpecificationTemplate;
 import com.br.sgs.utils.BusinessValidation;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -48,6 +50,9 @@ public class AttendenceResources {
 	
 	@Autowired
 	AttendenceHistService attendenceHistService;
+	
+	@Autowired
+	ClientEngagementLogService clientEngagementLogService;
 
 	@PostMapping("/{companyId}/client/{clientId}")
 	private ResponseEntity<Object> createAttendence(@PathVariable UUID companyId, @PathVariable UUID clientId,
@@ -60,7 +65,8 @@ public class AttendenceResources {
 		CompanyModel company = businessValidation.validateCompanyOptional(companyId);
 
 		attendenceService.save(attendenceDto, company, client);
-
+		clientEngagementLogService.validateClientByClientIdAndCompanyId(clientId, companyId);
+		
 		return new ResponseEntity<Object>(HttpStatus.CREATED);
 	}
 

@@ -245,14 +245,13 @@ public class AttendenceServiceImpl implements AttendenceService {
 	public Object countAttendenceByCompanyAndDate(UUID companyId) {
 		DefaultValueDto defaultValueDto = new DefaultValueDto();
 		
-		LocalDate iniDate = LocalDate.now(ZoneId.of("UTC"));
-		LocalDate endDate = LocalDate.now(ZoneId.of("UTC")).plusDays(1);
+		LocalDateTime iniDate = LocalDateTime.now(ZoneId.of("UTC")).with(LocalTime.MIDNIGHT);
+		LocalDateTime endDate = LocalDateTime.now(ZoneId.of("UTC")).with(LocalTime.MAX);
+		//LocalDate endDate = LocalDate.now(ZoneId.of("UTC")).plusDays(1);
 		
-		//Long value = attendenceRepository.countByCompanyCompanyIdAndDtCreatedBetween(
-			//	companyId, iniDate.atStartOfDay(), endDate.atStartOfDay());
-
 		Long value = attendenceHistService.countByCompanyCompanyIdAndDtCreatedBetween(
-				companyId, iniDate.atStartOfDay(), endDate.atStartOfDay());
+				companyId, iniDate, endDate);
+		
 		defaultValueDto.setValue(value.toString());
 		defaultValueDto.setDescription("Atendimentos Concluídos");
 		return defaultValueDto;

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.br.sgs.services.AttendenceHistService;
 import com.br.sgs.services.AttendenceService;
+import com.br.sgs.services.ClientEngagementLogService;
 import com.br.sgs.utils.BusinessValidation;
 
 import lombok.extern.log4j.Log4j2;
@@ -33,6 +34,9 @@ public class AnalyticsResources {
 	
 	@Autowired
 	AttendenceHistService attendenceHistService;
+	
+	@Autowired
+	ClientEngagementLogService clientEngagementLogService;
 
 	@GetMapping("/{companyId}/count-by-company")
 	public ResponseEntity<Object> countAttendenceByCompany(@PathVariable UUID companyId) {
@@ -78,6 +82,15 @@ public class AnalyticsResources {
 		
 		businessValidation.validateCompany(companyId);
 		return ResponseEntity.status(HttpStatus.OK).body(attendenceHistService.mostCompanyClientByCompanyId(companyId));
+	}
+	
+	
+	@GetMapping("/{companyId}/engagement-client")
+	public ResponseEntity<Object> getEngagementClient(@PathVariable UUID companyId) {
+		log.info("GET getEngagementClient received {}", companyId);
+		
+		businessValidation.validateCompany(companyId);
+		return ResponseEntity.status(HttpStatus.OK).body(clientEngagementLogService.getEngagementClient(companyId));
 	}
 	
 	

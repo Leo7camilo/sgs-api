@@ -9,14 +9,16 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.br.sgs.enums.AttendenceState;
 import com.br.sgs.models.AttendenceHistModel;
 
 
 public interface AttendenceHistRepository
 		extends JpaRepository<AttendenceHistModel, UUID>, JpaSpecificationExecutor<AttendenceHistModel> {
 
-	Long countByCompanyCompanyIdAndDtCreatedBetween(UUID companyId, LocalDateTime atStartOfDay,
-			LocalDateTime atStartOfDay2);
+			//Long countByCompanyCompanyIdAndDtCreatedBetween(UUID companyId, LocalDateTime atStartOfDay,
+		//	LocalDateTime atStartOfDay2);
+
 	
 	@Query(value = 
 	" select c.organization, \r\n"
@@ -49,4 +51,15 @@ public interface AttendenceHistRepository
 			+ "and ah.status = 'ATTENDED' \r\n"
 			+ "order by ah.dt_created asc ", nativeQuery = true)
 	List<Object[]> getAllAttendenceHistByDocumentClient(String string, String document);
+
+	
+	@Query(value = "select count(ah.attendence_hist_id) as quantidade \r\n"
+			+ "	from sgsapi.attendence_hist ah \r\n"
+			+ "   where ah.company_id = ? \r\n"
+			+ "   and (ah.dt_created between ? and ?)\r\n"
+			+ "   and ah.status='ATTENDED'  ", nativeQuery = true)
+	Long countByCompanyCompanyIdAndDtCreatedBetween(String companyId,
+			LocalDateTime atStartOfDay, LocalDateTime atStartOfDay2);
+
+	
 }
